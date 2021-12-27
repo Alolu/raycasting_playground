@@ -12,8 +12,8 @@ function update(time){
     invalidateCanvas();
     
     let framespeed = (time - oldtime) / 1000;
-    rotatespeed = framespeed * 3
-    movespeed = framespeed * 3
+    rotatespeed = framespeed * 20
+    movespeed = framespeed * 13
 
     game.update();
 
