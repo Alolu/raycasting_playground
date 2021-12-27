@@ -56,6 +56,7 @@ class Player {
             if(e.key == 'd'){
                 this.dir.rotate(rotatespeed);
                 this.fov.rotate(rotatespeed);
+                console.log(this.dir);
             }
             if(e.key == 'a'){
                 this.dir.rotate(-rotatespeed);
