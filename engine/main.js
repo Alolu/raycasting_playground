@@ -7,13 +7,12 @@ const game = new Game();
 
 let oldtime = 0;
 
-
-
 function update(time){
+    invalidateCanvas();
     oldtime = time
 
-    invalidateCanvas();
     game.update();
+    
     requestAnimationFrame(update);
 }
 
@@ -23,13 +22,21 @@ function init(){
     SCREEN.style.border = '1px solid black'
 
     document.body.appendChild(SCREEN)
-
     requestAnimationFrame(update);
 }
 
 function invalidateCanvas(){
+    ctx.beginPath()
     ctx.fillStyle = 'black'
+    
     ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+}
+
+function write(text,x,y){
+    ctx.beginPath()
+    ctx.font = "30px serif";
+    ctx.fillStyle = 'white'
+    ctx.fillText(text,x,y);
 }
 
 init();

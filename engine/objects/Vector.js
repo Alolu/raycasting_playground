@@ -24,9 +24,31 @@ class Vector2D {
      * 
      * @param {Vector2D} vector 
      */
+     substractNew(vector) {
+        let newVec = new Vector2D(this.x,this.y)
+        newVec.substract(vector)
+
+        return newVec;
+    }
+
+    /**
+     * 
+     * @param {Vector2D} vector 
+     */
     add(vector) {
         this.x+=vector.x
         this.y+=vector.y
+
+        return this;
+    }
+
+    /**
+     * 
+     * @param {Vector2D} vector 
+     */
+    substract(vector) {
+        this.x-=vector.x
+        this.y-=vector.y
 
         return this;
     }

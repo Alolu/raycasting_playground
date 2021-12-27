@@ -1,5 +1,5 @@
-const zoom = 50;
-const playerSize = 10
+const zoom = 1;
+const playerSize = 1
 
 class Player {
     constructor(pos,dir,fov){
@@ -11,25 +11,15 @@ class Player {
     drawView() {
 
         let a = this.pos
-
-        let b = new Vector2D();
-        let c = new Vector2D();
-        let d = new Vector2D();
-
-        b.x = a.x + (this.dir.x * zoom);
-        b.y = a.y + (this.dir.y * zoom);
-
-        c.x = b.x + (this.fov.x * zoom);
-        c.y = b.y + (this.fov.y * zoom);
-        
-        d.x = b.x - (this.fov.x * zoom);
-        d.y = b.y - (this.fov.y * zoom);
+        let b = a.addNew(this.dir);
+        let c = b.addNew(this.fov);
+        let d = b.substractNew(this.fov);
 
         //draw dir
         ctx.beginPath();
         ctx.strokeStyle = 'white'
-        ctx.moveTo(a.x,a.y)
-        ctx.lineTo(b.x,b.y)
+        ctx.moveTo(a.x, a.y)
+        ctx.lineTo(b.x, b.y)
         ctx.stroke();
 
         //draw dot
@@ -41,14 +31,14 @@ class Player {
         //draw camera plane right
         ctx.beginPath();
         ctx.strokeStyle = 'red'
-        ctx.moveTo(b.x,b.y)
+        ctx.moveTo(b.x, b.y)
         ctx.lineTo(c.x, c.y)
         ctx.stroke()
 
         //draw camera plane left
         ctx.beginPath();
         ctx.strokeStyle = 'red'
-        ctx.moveTo(b.x,b.y)
+        ctx.moveTo(b.x, b.y)
         ctx.lineTo(d.x, d.y)
         ctx.stroke()
     }
