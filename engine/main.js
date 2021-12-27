@@ -13,6 +13,7 @@ function update(time){
     
     let framespeed = (time - oldtime) / 1000;
     rotatespeed = framespeed * 3
+    movespeed = framespeed * 3
 
     game.update();
 
@@ -37,10 +38,10 @@ function invalidateCanvas(){
     ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 }
 
-function write(text,x,y){
+function write(text,x,y,color = 'white'){
     ctx.beginPath()
     ctx.font = "30px serif";
-    ctx.fillStyle = 'white'
+    ctx.fillStyle = color
     ctx.fillText(text,x,y);
 }
 

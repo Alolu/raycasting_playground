@@ -48,10 +48,10 @@ class Player {
     setControls() {
         addEventListener('keydown',(e)=>{
             if(e.key == 'w'){
-                this.pos.add(this.dir)
+                this.pos.add(this.dir.multiplyNew(movespeed))
             }
             if(e.key == 's'){
-                this.pos.substract(this.dir)
+                this.pos.substract(this.dir.multiplyNew(movespeed))
             }
             if(e.key == 'd'){
                 this.dir.rotate(rotatespeed);

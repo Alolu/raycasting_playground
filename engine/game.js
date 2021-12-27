@@ -1,5 +1,6 @@
 class Game {
     player = new Player(new Vector2D(5,5));
+    map = new Map(this);
 
     update() {
         for(let x = 0; x < SCREEN_WIDTH; x++){
@@ -81,6 +82,8 @@ class Game {
             ctx.lineTo(x,drawEnd);
             ctx.stroke();
         }
+
+        this.map.update();
     }
 
     calculateSideDist(rayDir,step,sideDist,deltaDist,map) {

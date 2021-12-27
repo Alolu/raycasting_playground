@@ -57,5 +57,15 @@ class Vector2D {
         let oldX = this.x;
         this.x = this.x * Math.cos(direction) - this.y * Math.sin(direction);
         this.y = oldX * Math.sin(direction) + this.y * Math.cos(direction);
+
+        return this;
+    }
+
+    multiplyNew(factor) {
+        let newVec = new Vector2D(this.x,this.y)
+        newVec.x = this.x * factor
+        newVec.y = this.y * factor
+        
+        return newVec;
     }
  }
