@@ -10,41 +10,6 @@ class Player {
         this.setControls();
     }
 
-    drawView() {
-
-        let a = this.pos
-        let b = a.addNew(this.dir);
-        let c = b.addNew(this.fov);
-        let d = b.substractNew(this.fov);
-
-        //draw dir
-        ctx.beginPath();
-        ctx.strokeStyle = 'white'
-        ctx.moveTo(a.x, a.y)
-        ctx.lineTo(b.x, b.y)
-        ctx.stroke();
-
-        //draw dot
-        ctx.beginPath();
-        ctx.fillStyle = 'green'
-        ctx.arc(a.x, a.y, playerSize, 0, Math.PI * 2);
-        ctx.fill();
-
-        //draw camera plane right
-        ctx.beginPath();
-        ctx.strokeStyle = 'red'
-        ctx.moveTo(b.x, b.y)
-        ctx.lineTo(c.x, c.y)
-        ctx.stroke()
-
-        //draw camera plane left
-        ctx.beginPath();
-        ctx.strokeStyle = 'red'
-        ctx.moveTo(b.x, b.y)
-        ctx.lineTo(d.x, d.y)
-        ctx.stroke()
-    }
-
     setControls() {
         addEventListener('keydown',(e)=>{
             if(e.key == 'w' || e.key == 'ArrowUp'){

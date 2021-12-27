@@ -14,6 +14,8 @@ class Map {
     W_RATIO = this.MAP_WIDTH/this.MAP_LENGTH_W;
     H_RATIO = this.MAP_HEIGHT/this.MAP_LENGTH_H;
 
+    raysQueue = [];
+
     update(){
         ctx.save();
         ctx.translate(this.MAP_POS.x, this.MAP_POS.y)
@@ -23,6 +25,7 @@ class Map {
         this.drawMap();
         this.drawPlayer();
         this.drawFOV();
+        this.drawRays();
 
         ctx.restore();
     }
@@ -46,6 +49,10 @@ class Map {
         }
     }
 
+    moveToPlayer(){
+        ctx.moveTo(this.player.pos.x * this.W_RATIO, this.player.pos.y * this.H_RATIO);
+    }
+
     drawPlayer() {
         ctx.fillStyle = 'red'
         ctx.arc(this.player.pos.x * this.W_RATIO, this.player.pos.y * this.H_RATIO, 1, 0, Math.PI * 2);
@@ -55,8 +62,26 @@ class Map {
     drawFOV(){
         ctx.strokeStyle = 'purple'
         let dir = this.player.pos.addNew(this.player.dir);
-        ctx.moveTo(this.player.pos.x * this.W_RATIO, this.player.pos.y * this.H_RATIO);
+        this.moveToPlayer();
         ctx.lineTo(dir.x * this.W_RATIO,dir.y * this.H_RATIO);
         ctx.stroke();
+    }
+
+    drawRays(){
+        ctx.strokeStyle = 'yellow'
+        
+        for(let ray of this.raysQueue){
+            this.moveToPlayer();
+            
+            ctx.lineTo(ray.x * this.W_RATIO, ray.y * this.H_RATIO);
+            ctx.stroke();
+        }
+        console.log(this.raysQueue.length)
+        this.raysQueue = [];        
+    }
+
+    pushRayQueue(pos) {
+        if(this.raysQueue.includes(pos)) return;
+        this.raysQueue.push(pos)
     }
 }
