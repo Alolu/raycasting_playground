@@ -6,14 +6,18 @@ const ctx = SCREEN.getContext('2d');
 const game = new Game();
 
 let oldtime = 0;
+let rotatespeed; 
 
 function update(time){
     invalidateCanvas();
-    oldtime = time
+    
+    let framespeed = (time - oldtime) / 1000;
+    rotatespeed = framespeed * 3
 
     game.update();
-    
+
     requestAnimationFrame(update);
+    oldtime = time
 }
 
 function init(){
@@ -22,6 +26,9 @@ function init(){
     SCREEN.style.border = '1px solid black'
 
     document.body.appendChild(SCREEN)
+
+    game.init();
+
     requestAnimationFrame(update);
 }
 

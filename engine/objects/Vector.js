@@ -52,4 +52,10 @@ class Vector2D {
 
         return this;
     }
+
+    rotate(direction) {
+        let oldX = this.x;
+        this.x = this.x * Math.cos(direction) - this.y * Math.sin(direction);
+        this.y = oldX * Math.sin(direction) + this.y * Math.cos(direction);
+    }
  }

@@ -1,6 +1,19 @@
 class Game {
-    player = new Player(new Vector2D(7,2))
+    player = new Player(new Vector2D(5,5))
     done;
+
+    init() {
+        addEventListener('keydown',(e)=>{
+            if(e.key == 'd'){
+                this.player.dir.rotate(rotatespeed);
+                this.player.fov.rotate(rotatespeed);
+            }
+            if(e.key == 'a'){
+                this.player.dir.rotate(-rotatespeed);
+                this.player.fov.rotate(-rotatespeed);
+            }
+        })
+    }
 
     update() {
         for(let x = 0; x < SCREEN_WIDTH; x++){
@@ -9,6 +22,8 @@ class Game {
             let perpWallDist;
             let hit = 0;
             let side;
+            let lineHeight;
+            let drawStart,drawEnd;
             let sideDist = {
                 x: null,
                 y: null,
@@ -46,8 +61,6 @@ class Game {
             }
             
             while(hit == 0) {
-                invalidateCanvas()
-
                 if(sideDist.y < sideDist.x){
                     sideDist.x += deltaDist.x;
                     map.x += step.x;
@@ -59,20 +72,29 @@ class Game {
                 }
 
                 if(gamemap[map.x][map.y] > 0) hit = 1;
-                
-                write(`hit: ${hit}`,10,30)
+
+                /* write(`hit: ${hit}`,10,30)
                 write(`map coords: ${map.x},${map.y}`,10,60)
                 write(`map val: ${gamemap[map.x][map.y]}`,10,90)
                 write(`map step: ${step.x},${step.y}`,10,120)
-                write(`player pos: ${this.player.pos.x},${this.player.pos.y}`,10,150)
+                write(`player pos: ${this.player.pos.x},${this.player.pos.y}`,10,150) */
             }
 
             //get closest distance from visible wall to camera plane (explication to revisit)
             perpWallDist = side ? (sideDist.y - deltaDist.y) : (sideDist.x - deltaDist.x);
-            write(`perpdist: ${hit}`,10,180)
-            
+
+            lineHeight = Math.floor(SCREEN_HEIGHT / perpWallDist)
+            drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2
+            if(drawStart < 0) drawStart = 0;
+            drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2
+            if(drawEnd < 0) drawEnd = SCREEN_HEIGHT - 1;
+
+            ctx.beginPath()
+            ctx.strokeStyle = 'red'
+            ctx.moveTo(x,drawStart);
+            ctx.lineTo(x,drawEnd);
+            ctx.stroke();
         }
-        this.player.drawView()
     }
 
     calculateSideDist(rayDir,step,sideDist,deltaDist,map) {
