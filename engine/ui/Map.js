@@ -40,7 +40,7 @@ class Map {
             for(let i = 0; i < this.MAP_LENGTH_W; i++){
                 if(gamemap[k][i] > 0){
                     ctx.fillStyle = 'blue'
-                    ctx.fillRect(this.W_RATIO * i, this.H_RATIO * k, this.W_RATIO, this.H_RATIO);
+                    ctx.fillRect(this.W_RATIO * k, this.H_RATIO * i, this.W_RATIO, this.H_RATIO);
                 }
             }
         }
