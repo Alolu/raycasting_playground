@@ -48,7 +48,7 @@ class Game {
             }
             
             while(hit == 0) {
-                if(sideDist.y < sideDist.x){
+                if(sideDist.x < sideDist.y){
                     sideDist.x += deltaDist.x;
                     map.x += step.x;
                     side = 0;
