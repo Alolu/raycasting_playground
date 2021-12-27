@@ -47,18 +47,17 @@ class Player {
 
     setControls() {
         addEventListener('keydown',(e)=>{
-            if(e.key == 'w'){
+            if(e.key == 'w' || e.key == 'ArrowUp'){
                 this.pos.add(this.dir.multiplyNew(movespeed))
             }
-            if(e.key == 's'){
+            if(e.key == 's' || e.key == 'ArrowDown'){
                 this.pos.substract(this.dir.multiplyNew(movespeed))
             }
-            if(e.key == 'd'){
+            if(e.key == 'd' || e.key == 'ArrowRight'){
                 this.dir.rotate(rotatespeed);
                 this.fov.rotate(rotatespeed);
-                console.log(this.dir);
             }
-            if(e.key == 'a'){
+            if(e.key == 'a' || e.key == 'ArrowLeft'){
                 this.dir.rotate(-rotatespeed);
                 this.fov.rotate(-rotatespeed);
             }
