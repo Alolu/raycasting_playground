@@ -48,7 +48,7 @@ class Map {
 
     drawPlayer() {
         ctx.fillStyle = 'red'
-        ctx.arc(this.player.pos.x * this.W_RATIO, this.player.pos.y * this.H_RATIO, 5, 0, Math.PI * 2);
+        ctx.arc(this.player.pos.x * this.W_RATIO, this.player.pos.y * this.H_RATIO, 1, 0, Math.PI * 2);
         ctx.fill();
     }
 
