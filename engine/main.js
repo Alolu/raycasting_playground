@@ -27,8 +27,6 @@ function init(){
 
     document.body.appendChild(SCREEN)
 
-    game.init();
-
     requestAnimationFrame(update);
 }
 

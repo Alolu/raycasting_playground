@@ -1,19 +1,5 @@
 class Game {
-    player = new Player(new Vector2D(5,5))
-    done;
-
-    init() {
-        addEventListener('keydown',(e)=>{
-            if(e.key == 'd'){
-                this.player.dir.rotate(rotatespeed);
-                this.player.fov.rotate(rotatespeed);
-            }
-            if(e.key == 'a'){
-                this.player.dir.rotate(-rotatespeed);
-                this.player.fov.rotate(-rotatespeed);
-            }
-        })
-    }
+    player = new Player(new Vector2D(5,5));
 
     update() {
         for(let x = 0; x < SCREEN_WIDTH; x++){

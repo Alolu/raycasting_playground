@@ -6,6 +6,8 @@ class Player {
         this.pos = pos || new Vector2D()
         this.dir = dir || new Vector2D(1,0)
         this.fov = fov || new Vector2D(0,0.66)
+
+        this.setControls();
     }
 
     drawView() {
@@ -41,5 +43,24 @@ class Player {
         ctx.moveTo(b.x, b.y)
         ctx.lineTo(d.x, d.y)
         ctx.stroke()
+    }
+
+    setControls() {
+        addEventListener('keydown',(e)=>{
+            if(e.key == 'w'){
+                this.pos.add(this.dir)
+            }
+            if(e.key == 's'){
+                this.pos.substract(this.dir)
+            }
+            if(e.key == 'd'){
+                this.dir.rotate(rotatespeed);
+                this.fov.rotate(rotatespeed);
+            }
+            if(e.key == 'a'){
+                this.dir.rotate(-rotatespeed);
+                this.fov.rotate(-rotatespeed);
+            }
+        })
     }
 }
