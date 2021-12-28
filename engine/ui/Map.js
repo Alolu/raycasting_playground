@@ -24,7 +24,6 @@ class Map {
         this.drawRect();
         this.drawMap();
         this.drawPlayer();
-        this.drawFOV();
         this.drawRays();
 
         ctx.restore();
@@ -42,7 +41,7 @@ class Map {
             //width loop
             for(let i = 0; i < this.MAP_LENGTH_W; i++){
                 if(gamemap[k][i] > 0){
-                    ctx.fillStyle = 'blue'
+                    ctx.fillStyle = '#FF9E13'
                     ctx.fillRect(this.W_RATIO * k, this.H_RATIO * i, this.W_RATIO, this.H_RATIO);
                 }
             }
@@ -68,7 +67,7 @@ class Map {
     }
 
     drawRays(){
-        ctx.strokeStyle = '#FF9E13'
+        ctx.strokeStyle = 'black'
         
         for(let ray of this.raysQueue){
             this.moveToPlayer();
@@ -77,7 +76,7 @@ class Map {
             ctx.stroke();
         }
         
-        this.raysQueue = [];        
+        this.raysQueue = [];
     }
 
     pushRayQueue(pos) {

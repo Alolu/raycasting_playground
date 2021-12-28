@@ -72,4 +72,9 @@ class Vector2D {
     clone(){
         return new Vector2D(this.x,this.y)
     }
+
+    set(x,y){
+        this.x = x;
+        this.y = y;
+    }
  }
