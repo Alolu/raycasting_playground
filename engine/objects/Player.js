@@ -26,13 +26,18 @@ class Player {
     }
 
     update(){
+        let dir = this.dir.multiplyNew(movespeed);
         switch (this.PLAYER_STATE) {
             case playerConstants.FORWARD:
-                this.pos.add(this.dir.multiplyNew(movespeed))
+                if(gamemap[Math.floor(this.pos.x + dir.x)][Math.floor(this.pos.y)]) dir.x = 0;
+                if(gamemap[Math.floor(this.pos.x)][Math.floor(this.pos.y + dir.y)]) dir.y = 0;
+                this.pos.add(dir)
                 break;
 
             case playerConstants.BACK:
-                this.pos.substract(this.dir.multiplyNew(movespeed))
+                if(gamemap[Math.floor(this.pos.x - dir.x)][Math.floor(this.pos.y)]) dir.x = 0;
+                if(gamemap[Math.floor(this.pos.x)][Math.floor(this.pos.y - dir.y)]) dir.y = 0;
+                this.pos.substract(dir)
                 break;
             
             case playerConstants.RIGHT:
