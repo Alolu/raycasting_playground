@@ -55,7 +55,13 @@ class Camera {
             this.textureId = gamemap[this.intPos.x][this.intPos.y] - 1;
 
             //Object needs to be cloned as to not pass intPos reference
+            this.setWallCoords();
             this.rayToMap();
+
+            //Substract the integer to get the wall coordinate itself
+            this.wall.x -= Math.floor(this.wall.x);
+
+            this.setTexCoords();
 
             this.setDrawBoundary();
             this.setColor();
@@ -141,15 +147,17 @@ class Camera {
     }
 
     setTexCoords(){
-        this.tex.x = Math.floot(this.wall.x * TEX_WIDTH)
+        this.tex.x = Math.floor(this.wall.x * TEX_WIDTH)
         if(this.side == 0 && this.rayDir.x > 0) this.tex.x = TEX_WIDTH - this.tex.x - 1;
         if(this.side == 1 && this.rayDir.y < 0) this.tex.x = TEX_WIDTH - this.tex.x - 1;
+
+        debug('intrisic wall x', this.wall.x)
+        debug('texture x',this.tex.x)
     }
 
     rayToMap(){
         let mapRay = new Vector2D();
 
-        this.setWallCoords();
         if(this.side == 0) mapRay.set(this.wall.y,this.wall.x)
         else mapRay.set(this.wall.x, this.wall.y)
 
