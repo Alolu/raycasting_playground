@@ -68,4 +68,8 @@ class Vector2D {
         
         return newVec;
     }
+
+    clone(){
+        return new Vector2D(this.x,this.y)
+    }
  }

@@ -8,5 +8,6 @@ class Game {
     update() {
         this.camera.update();
         this.map.update();
+        this.player.update();
     }
 }

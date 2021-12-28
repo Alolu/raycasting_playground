@@ -45,7 +45,8 @@ class Camera {
                 if(gamemap[this.intPos.x][this.intPos.y] > 0) hit = 1;
             }
 
-            game.map.pushRayQueue(this.intPos);
+            //Object needs to be cloned as to not pass intPos reference
+            game.map.pushRayQueue(this.intPos.clone());
 
             //get closest distance from visible wall to camera plane (explication to revisit)
             this.perpWallDist = this.side ? (this.sideDist.y - this.deltaDist.y) : (this.sideDist.x - this.deltaDist.x);

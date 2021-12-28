@@ -68,7 +68,7 @@ class Map {
     }
 
     drawRays(){
-        ctx.strokeStyle = 'yellow'
+        ctx.strokeStyle = '#FF9E13'
         
         for(let ray of this.raysQueue){
             this.moveToPlayer();
@@ -76,7 +76,7 @@ class Map {
             ctx.lineTo(ray.x * this.W_RATIO, ray.y * this.H_RATIO);
             ctx.stroke();
         }
-        console.log(this.raysQueue.length)
+        
         this.raysQueue = [];        
     }
 
