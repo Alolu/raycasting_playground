@@ -11,6 +11,7 @@ class Camera {
     lineHeight;
     drawStart;
     drawEnd;
+    color;
     sideDist = new Vector2D();
     step = new Vector2D();
     rayDir = new Vector2D();
@@ -54,6 +55,7 @@ class Camera {
             this.lineHeight = Math.floor(SCREEN_HEIGHT / this.perpWallDist)
             
             this.setDrawBoundary();
+            this.setColor();
             this.drawLine(x);
         }
     }
@@ -91,6 +93,15 @@ class Camera {
         }
     }
 
+    setColor(){
+        if(this.side){
+            this.color = '#FF4300'
+        } else {
+            this.color = '#CC3500'
+        }
+
+    }
+
     setDrawBoundary(){
         this.drawStart = -this.lineHeight / 2 + SCREEN_HEIGHT / 2
         if(this.drawStart < 0) this.drawStart = 0;
@@ -100,7 +111,7 @@ class Camera {
 
     drawLine(x){
         ctx.beginPath()
-        ctx.strokeStyle = 'red'
+        ctx.strokeStyle = this.color;
         ctx.moveTo(x, this.drawStart);
         ctx.lineTo(x, this.drawEnd);
         ctx.stroke();
