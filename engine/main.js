@@ -41,9 +41,10 @@ function init(){
 
 function invalidateCanvas(){
     ctx.beginPath()
-    ctx.fillStyle = 'black'
-    
-    ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+    ctx.fillStyle = '#BAF8FF'
+    ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT/2);
+    ctx.fillStyle = '#333333'
+    ctx.fillRect(0,SCREEN_HEIGHT/2,SCREEN_WIDTH,SCREEN_HEIGHT);
 }
 
 function write(text,x,y,color = 'white',font='10px'){
