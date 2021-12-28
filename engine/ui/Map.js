@@ -30,7 +30,7 @@ class Map {
     }
 
     drawRect(){
-        ctx.fillStyle = 'white'
+        ctx.fillStyle = 'black'
         ctx.fillRect(0,0, this.MAP_WIDTH, this.MAP_HEIGHT)
     }
 
@@ -67,7 +67,7 @@ class Map {
     }
 
     drawRays(){
-        ctx.strokeStyle = 'black'
+        ctx.strokeStyle = 'white'
         
         for(let ray of this.raysQueue){
             this.moveToPlayer();
