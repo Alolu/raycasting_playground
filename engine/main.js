@@ -1,5 +1,5 @@
-const SCREEN_WIDTH = 640;
-const SCREEN_HEIGHT = 480;
+const SCREEN_WIDTH = window.innerWidth;
+const SCREEN_HEIGHT = window.innerHeight;
 const SCREEN = document.createElement('canvas');
 const ctx = SCREEN.getContext('2d');
 
@@ -20,12 +20,13 @@ function update(time){
     let framespeed = (time - oldtime) / 1000;
     rotatespeed = framespeed * 15
     movespeed = framespeed * 4
-
+    
     game.update();
     displayDebug();
 
-    requestAnimationFrame(update);
     oldtime = time
+    debug('FPS',1/framespeed)
+    requestAnimationFrame(update);
 }
 
 function init(){

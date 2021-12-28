@@ -68,14 +68,14 @@ class Map {
 
     drawRays(){
         ctx.strokeStyle = 'white'
+
+        debug('ray queue', this.raysQueue.length)
         
         for(let ray of this.raysQueue){
             this.moveToPlayer();
-            
             ctx.lineTo(ray.x * this.W_RATIO, ray.y * this.H_RATIO);
-            ctx.stroke();
         }
-        
+        ctx.stroke();
         this.raysQueue = [];
     }
 

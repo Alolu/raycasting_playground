@@ -161,10 +161,6 @@ class Camera {
         if(this.side == 0) mapRay.set(this.wall.y,this.wall.x)
         else mapRay.set(this.wall.x, this.wall.y)
 
-        //Precision correction
-        //if(mapRay.x < this.player.pos.x) mapRay.x += 1;
-        //if(mapRay.y < this.player.pos.y) mapRay.y += 1;
-
         game.map.pushRayQueue(mapRay);
     }
 }
