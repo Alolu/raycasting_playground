@@ -63,8 +63,9 @@ class Camera {
             this.wall.x -= Math.floor(this.wall.x);
 
             this.setTexCoords();
-
             this.setDrawBoundary();
+            this.drawTexture();
+
             this.setColor();
             this.drawLine(x);
 
@@ -121,10 +122,15 @@ class Camera {
     drawTexture(){
         let step = 1 * TEX_HEIGHT / this.lineHeight;
         let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
+        debug('draw start', this.drawStart);
+        debug('draw end', this.drawEnd);
+        debug('line height', this.lineHeight);
+        debug('tex pos', texPos);
 
         for(let y = this.drawStart; y < this.drawEnd; y++){
-            this.tex.y = Math.floor(texPos) & (texHeight - 1);
+            this.tex.y = Math.floor(texPos) & (TEX_HEIGHT - 1);
         }
+        debug('texture y',this.tex.y)
     }
 
     setDrawBoundary(){
@@ -132,6 +138,7 @@ class Camera {
         if(this.drawStart < 0) this.drawStart = 0;
         this.drawEnd = this.lineHeight / 2 + SCREEN_HEIGHT / 2
         if(this.drawEnd < 0) this.drawEnd = SCREEN_HEIGHT - 1;
+        if(this.drawEnd > SCREEN_HEIGHT) this.drawEnd = SCREEN_HEIGHT;
     }
 
     drawLine(x){

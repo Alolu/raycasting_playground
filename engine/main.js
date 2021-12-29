@@ -12,7 +12,8 @@ let oldtime = 0;
 let rotatespeed;
 
 let debugQueue = [], debugIdQueue = [];
-let debugTextSize = 20
+let debugTextSize = 20,
+    debugColor = 'black'
 
 function update(time){
     invalidateCanvas();
@@ -62,7 +63,7 @@ function debug(id,str){
 
 function displayDebug() {
     for(let i = 0; i < debugQueue.length; i++){
-        write(debugQueue[i],10,debugTextSize*(i+1),'white',debugTextSize + 'px')
+        write(debugQueue[i],10,debugTextSize*(i+1),debugColor,debugTextSize + 'px')
     }
     debugIdQueue = [];
     debugQueue = [];
