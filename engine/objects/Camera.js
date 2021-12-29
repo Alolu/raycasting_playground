@@ -23,6 +23,7 @@ class Camera {
     buffer = [];
 
     update(){
+        this.buffer = []
         for(let x = 0; x < SCREEN_WIDTH; x++){
 
             let hit = 0;
@@ -64,7 +65,7 @@ class Camera {
 
             this.setTexCoords();
             this.setDrawBoundary();
-            this.drawTexture();
+            this.drawTexture(x);
 
             this.setColor();
             this.drawLine(x);
@@ -119,17 +120,28 @@ class Camera {
 
     }
 
-    drawTexture(){
+    drawTexture(x){
         let step = 1 * TEX_HEIGHT / this.lineHeight;
         let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
+        let texValue = 0;
         debug('draw start', this.drawStart);
         debug('draw end', this.drawEnd);
         debug('line height', this.lineHeight);
         debug('tex pos', texPos);
+        debug('tex step',step)
+        debug('tex id',this.textureId)
+        //debug('tex exists ?',Boolean(game.textureLoader.textures[this.textureId]))
 
         for(let y = this.drawStart; y < this.drawEnd; y++){
-            this.tex.y = Math.floor(texPos) & (TEX_HEIGHT - 1);
+            this.tex.y = parseInt(texPos) & (TEX_HEIGHT - 1);
+            texPos += step;
+            let color = game.textureLoader.textures[this.textureId][TEX_HEIGHT * this.tex.y + this.tex.x]
+            if(this.side == 1) color = (color >> 1) & 8355711;
+            //this.buffer[y][x] = decToRGB(color);
         }
+        
+        debug('tex value',texValue)
+        debug('texture x',this.tex.x)
         debug('texture y',this.tex.y)
     }
 
@@ -169,7 +181,6 @@ class Camera {
         if(this.side == 1 && this.rayDir.y < 0) this.tex.x = TEX_WIDTH - this.tex.x - 1;
 
         debug('intrisic wall x', this.wall.x)
-        debug('texture x',this.tex.x)
     }
 
     rayToMap(){
