@@ -20,6 +20,7 @@ class Camera {
     deltaDist = new Vector2D();
     wall = new Vector2D();
     tex = new Vector2D();
+    buffer = [];
 
     update(){
         for(let x = 0; x < SCREEN_WIDTH; x++){
@@ -115,6 +116,15 @@ class Camera {
             this.color = '#CC3500'
         }
 
+    }
+
+    drawTexture(){
+        let step = 1 * TEX_HEIGHT / this.lineHeight;
+        let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
+
+        for(let y = this.drawStart; y < this.drawEnd; y++){
+            this.tex.y = Math.floor(texPos) & (texHeight - 1);
+        }
     }
 
     setDrawBoundary(){

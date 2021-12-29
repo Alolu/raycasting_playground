@@ -16,6 +16,8 @@ class Map {
 
     raysQueue = [];
 
+    viewDist = 20;
+
     update(){
         ctx.save();
         ctx.translate(this.MAP_POS.x, this.MAP_POS.y)
@@ -67,7 +69,14 @@ class Map {
     }
 
     drawRays(){
-        ctx.strokeStyle = 'white'
+
+        let playerPosRatio = this.vectorToRatio(this.player.pos)
+
+        let rayGradient = ctx.createRadialGradient(playerPosRatio.x,playerPosRatio.y,this.viewDist,playerPosRatio.x,playerPosRatio.y, this.viewDist * 5)
+        rayGradient.addColorStop(0,'white')
+        rayGradient.addColorStop(1,'black')
+        
+        ctx.strokeStyle = rayGradient
 
         debug('ray queue', this.raysQueue.length)
         
@@ -82,5 +91,9 @@ class Map {
     pushRayQueue(pos) {
         if(this.raysQueue.includes(pos)) return;
         this.raysQueue.push(pos)
+    }
+
+    vectorToRatio(vec){
+        return new Vector2D(vec.x * this.W_RATIO, vec.y * this.H_RATIO)
     }
 }
