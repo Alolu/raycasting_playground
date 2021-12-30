@@ -155,7 +155,10 @@ class Camera {
     }
 
     drawLine(x){
-        ctx.drawImage(game.textureLoader.textures[this.textureId],this.tex.x,0,1,TEX_HEIGHT,x,this.drawStart,1,this.lineHeight)
+        let step = TEX_HEIGHT / this.lineHeight;
+        let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
+        this.tex.y = Math.floor(texPos) & (TEX_HEIGHT - 1);
+        ctx.drawImage(game.textureLoader.textures[this.textureId],this.tex.x,this.tex.y,1,TEX_HEIGHT,x,this.drawStart,1,this.lineHeight)
     }
 
     setWallCoords(){
