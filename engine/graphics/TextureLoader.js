@@ -2,7 +2,22 @@ class TextureLoader {
     constructor(){
         //Im probably doing something dumb right here lol
         this.textures = []
-        this.generateTextures()
+        this.loadTextures()
+    }
+
+    loadTextures(){
+        let maxTexture = 0;
+        for (let y = 0; y < gamemap.length; y++) {
+                for (var x = 0; x < gamemap[y].length; x++) {
+                        maxTexture = Math.max(maxTexture, gamemap[y][x]);
+                }
+        }
+
+        for (let i = 0; i <= maxTexture; i++) {
+                var texture = new Image();
+                texture.src = 'textures/' + i + '.png';
+                this.textures.push(texture)
+        }
     }
 
     generateTextures(){

@@ -23,7 +23,6 @@ class Camera {
     buffer = [];
 
     update(){
-        this.buffer = []
         for(let x = 0; x < SCREEN_WIDTH; x++){
 
             let hit = 0;
@@ -124,6 +123,7 @@ class Camera {
         let step = 1 * TEX_HEIGHT / this.lineHeight;
         let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
         let texValue = 0;
+        this.buffer = []
         debug('draw start', this.drawStart);
         debug('draw end', this.drawEnd);
         debug('line height', this.lineHeight);
@@ -137,7 +137,8 @@ class Camera {
             texPos += step;
             let color = game.textureLoader.textures[this.textureId][TEX_HEIGHT * this.tex.y + this.tex.x]
             if(this.side == 1) color = (color >> 1) & 8355711;
-            //this.buffer[y][x] = decToRGB(color);
+            this.buffer.push(...decToRGB(color));
+            debug('r',decToRGB(color));
         }
         
         debug('tex value',texValue)
@@ -154,11 +155,7 @@ class Camera {
     }
 
     drawLine(x){
-        ctx.beginPath()
-        ctx.strokeStyle = this.color;
-        ctx.moveTo(x, this.drawStart);
-        ctx.lineTo(x, this.drawEnd);
-        ctx.stroke();
+        ctx.drawImage(game.textureLoader.textures[this.textureId],this.tex.x,0,1,TEX_HEIGHT,x,this.drawStart,1,this.lineHeight)
     }
 
     setWallCoords(){

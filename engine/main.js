@@ -53,6 +53,8 @@ function invalidateCanvas(){
     ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT/2);
     ctx.fillStyle = '#333333'
     ctx.fillRect(0,SCREEN_HEIGHT/2,SCREEN_WIDTH,SCREEN_HEIGHT);
+    //ctx.fillStyle = 'white'
+    //ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 }
 
 function write(text,x,y,color = 'white',font='10px'){
@@ -76,13 +78,8 @@ function displayDebug() {
     debugQueue = [];
 }
 
-function decToRGB(num){
-    num >>>= 0;
-    var b = num & 0xFF,
-        g = (num & 0xFF00) >>> 8,
-        r = (num & 0xFF0000) >>> 16,
-        a = ( (num & 0xFF000000) >>> 24 ) / 255 ;
-    return [r,g,b,a];
+function decToRGB(decimal) {
+    return [(decimal >> 16) & 0xff,(decimal >> 8) & 0xff,decimal & 0xff]
 }
 
 init();
