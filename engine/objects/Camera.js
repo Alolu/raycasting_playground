@@ -64,7 +64,7 @@ class Camera {
 
             this.setTexCoords();
             this.setDrawBoundary();
-            this.drawTexture(x);
+            //this.drawTexture(x);
 
             this.setColor();
             this.drawLine(x);
@@ -136,9 +136,9 @@ class Camera {
             this.tex.y = parseInt(texPos) & (TEX_HEIGHT - 1);
             texPos += step;
             let color = game.textureLoader.textures[this.textureId][TEX_HEIGHT * this.tex.y + this.tex.x]
-            if(this.side == 1) color = (color >> 1) & 8355711;
-            this.buffer.push(...decToRGB(color));
-            debug('r',decToRGB(color));
+            //if(this.side == 1) color = (color >> 1) & 8355711;
+            //this.buffer.push(...decToRGB(color));
+            //debug('r',decToRGB(color));
         }
         
         debug('tex value',texValue)
