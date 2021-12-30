@@ -11,6 +11,8 @@ class Player {
     }
 
     PLAYER_STATE = playerConstants.IDLE;
+    oldMovement = new Vector2D()
+    rotatespeed = 0;
 
     setControls() {
         addEventListener('keydown',(e)=>{
@@ -22,6 +24,16 @@ class Player {
 
         addEventListener('keyup', (e)=>{
             this.PLAYER_STATE = playerConstants.IDLE;
+        })
+
+        addEventListener('mousemove', (e)=> {
+            this.rotatespeed = e.movementX * framespeed;
+
+            this.dir.rotate(this.rotatespeed);
+            this.fov.rotate(this.rotatespeed);
+
+            this.oldMovement.x = e.movementX
+            this.oldMovement.y = e.movementY
         })
     }
 
@@ -41,8 +53,7 @@ class Player {
                 break;
             
             case playerConstants.RIGHT:
-                this.dir.rotate(rotatespeed);
-                this.fov.rotate(rotatespeed);
+                
                 break;
         
             case playerConstants.LEFT:
@@ -53,5 +64,7 @@ class Player {
             default:
                 break;
         }
+
+        debug('delta',this.rotatespeed)
     }
 }

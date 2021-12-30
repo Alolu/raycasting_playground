@@ -6,6 +6,8 @@ const ctx = SCREEN.getContext('2d');
 const TEX_WIDTH = 64;
 const TEX_HEIGHT = 64
 
+let framespeed;
+
 const game = new Game();
 
 let oldtime = 0;
@@ -18,7 +20,7 @@ let debugTextSize = 20,
 function update(time){
     invalidateCanvas();
     
-    let framespeed = (time - oldtime) / 1000;
+    framespeed = (time - oldtime) / 1000;
     rotatespeed = framespeed * 15
     movespeed = framespeed * 4
     
@@ -36,6 +38,11 @@ function init(){
     SCREEN.style.border = '1px solid black'
 
     document.body.appendChild(SCREEN)
+    SCREEN.requestPointerLock = SCREEN.requestPointerLock || SCREEN.mozRequestPointerLock;
+    SCREEN.onclick = () => {
+        SCREEN.requestPointerLock();
+    }
+
 
     requestAnimationFrame(update);
 }
