@@ -7,6 +7,7 @@ class Game {
     map = new Map(this);
 
     update() {
+        if(!this.textureLoader.loaded) return;
         this.camera.update();
         this.map.update();
         this.player.update();

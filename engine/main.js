@@ -38,6 +38,7 @@ function init(){
     SCREEN.style.border = '1px solid black'
 
     document.body.appendChild(SCREEN)
+
     SCREEN.requestPointerLock = SCREEN.requestPointerLock || SCREEN.mozRequestPointerLock;
     SCREEN.onclick = () => {
         SCREEN.requestPointerLock();

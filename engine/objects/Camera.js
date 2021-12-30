@@ -23,6 +23,7 @@ class Camera {
     buffer = [];
 
     update(){
+        this.resetBuffer();
         for(let x = 0; x < SCREEN_WIDTH; x++){
 
             let hit = 0;
@@ -66,8 +67,7 @@ class Camera {
             this.setDrawBoundary();
             this.drawTexture(x);
 
-            this.setColor();
-            this.drawLine(x);
+            //this.drawLine(x);
 
             debug('perpWallDist',this.perpWallDist)
             debug('player pos x',this.player.pos.x)
@@ -75,6 +75,7 @@ class Camera {
             debug('cell pos x', this.intPos.x)
             debug('cell pos y', this.intPos.y)
         }
+        this.drawBuffer();
     }
 
     setRaydir(){
@@ -123,7 +124,6 @@ class Camera {
         let step = 1 * TEX_HEIGHT / this.lineHeight;
         let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
         let texValue = 0;
-        this.buffer = []
         debug('draw start', this.drawStart);
         debug('draw end', this.drawEnd);
         debug('line height', this.lineHeight);
@@ -132,13 +132,13 @@ class Camera {
         debug('tex id',this.textureId)
         //debug('tex exists ?',Boolean(game.textureLoader.textures[this.textureId]))
 
-        for(let y = this.drawStart; y < this.drawEnd; y++){
+
+        for(let y = Math.floor(this.drawStart); y < Math.floor(this.drawEnd); y++){
             this.tex.y = parseInt(texPos) & (TEX_HEIGHT - 1);
             texPos += step;
-            let color = game.textureLoader.textures[this.textureId][TEX_HEIGHT * this.tex.y + this.tex.x]
-            if(this.side == 1) color = (color >> 1) & 8355711;
-            this.buffer.push(...decToRGB(color));
-            debug('r',decToRGB(color));
+            let color = game.textureLoader.textures[this.textureId][this.tex.y][this.tex.x]
+            //if(this.side == 1) color = (color >> 1) & 8355711;
+            this.buffer[y][x] = color;
         }
         
         debug('tex value',texValue)
@@ -187,5 +187,26 @@ class Camera {
         else mapRay.set(this.wall.x, this.wall.y)
 
         game.map.pushRayQueue(mapRay);
+    }
+
+    drawBuffer(){
+        let scene = ctx.createImageData(SCREEN_WIDTH,SCREEN_HEIGHT);
+        let sceneIndex;
+        for(let y = 0; y < this.buffer.length; y++){
+            for(let x = 0; x < this.buffer[y].length; x++){
+                sceneIndex = 4 * (x + y * SCREEN_WIDTH);
+                scene.data[sceneIndex    ] = this.buffer[y][x][0]
+                scene.data[sceneIndex + 1] = this.buffer[y][x][1]
+                scene.data[sceneIndex + 2] = this.buffer[y][x][2]
+                scene.data[sceneIndex + 3] = this.buffer[y][x][3]
+            }
+        }
+
+        ctx.putImageData(scene,0,0);
+    }
+
+    resetBuffer(){
+        this.buffer = Array.apply(null, Array(SCREEN_HEIGHT)).map(function () {return 0})
+        for(let x = 0; x < this.buffer.length; x++) this.buffer[x] = Array.apply(null, Array(SCREEN_WIDTH)).map(function () {return 0})
     }
 }

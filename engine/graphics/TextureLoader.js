@@ -2,10 +2,20 @@ class TextureLoader {
     constructor(){
         //Im probably doing something dumb right here lol
         this.textures = []
+        this.loaded = false;
         this.loadTextures()
     }
 
+    //THE PLAN => STOCK ALL IMGDATA IN 64x64 ARRAYS
+    // => ONLY DRAW IMAGE AT THE END OF THE FOR LOOP
+    // => BASICALLY GOING BACK TO LODE'S WAY OF DOING THINGS
     loadTextures(){
+        let tmpCanvas = document.createElement('canvas');
+        tmpCanvas.height = TEX_HEIGHT;
+        tmpCanvas.width = TEX_WIDTH;
+
+        let tpmctx = tmpCanvas.getContext('2d');
+
         let maxTexture = 0;
         for (let y = 0; y < gamemap.length; y++) {
                 for (var x = 0; x < gamemap[y].length; x++) {
@@ -14,9 +24,25 @@ class TextureLoader {
         }
 
         for (let i = 0; i <= maxTexture; i++) {
-                var texture = new Image();
+                
+                let texData = [];
+                let texture = new Image();
                 texture.src = 'textures/' + i + '.png';
-                this.textures.push(texture)
+
+                texture.onload = () => {
+                    tpmctx.drawImage(texture, 0, 0);
+
+                    for(let iy = 0; iy < TEX_HEIGHT; iy++){
+                        texData[iy] = []
+                        for(let ix = 0; ix < TEX_WIDTH; ix++){
+                            texData[iy][ix] = tpmctx.getImageData(ix,iy,1,1).data;
+                        }
+                    }
+                    
+                    this.textures.push(texData)
+                    this.loaded = this.textures.length - 1 == maxTexture;
+                };
+                
         }
     }
 
