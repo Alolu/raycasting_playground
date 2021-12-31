@@ -89,7 +89,6 @@ class Map {
     }
 
     pushRayQueue(pos) {
-        if(this.raysQueue.includes(pos)) return;
         this.raysQueue.push(pos)
     }
 

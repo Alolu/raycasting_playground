@@ -69,11 +69,11 @@ class Camera {
             this.setColor();
             this.drawLine(x);
 
-            debug('perpWallDist',this.perpWallDist)
+            /* debug('perpWallDist',this.perpWallDist)
             debug('player pos x',this.player.pos.x)
             debug('player pos y',this.player.pos.y)
             debug('cell pos x', this.intPos.x)
-            debug('cell pos y', this.intPos.y)
+            debug('cell pos y', this.intPos.y) */
         }
     }
 
@@ -131,12 +131,13 @@ class Camera {
         let step = TEX_HEIGHT / this.lineHeight;
         let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
         this.tex.y = parseInt(texPos) & (TEX_HEIGHT - 1);
-        debug('tex y',this.tex.y)
+        /* debug('tex y',this.tex.y)
         debug('tex pos',parseInt(texPos))
         debug('step', step)
         debug('drawstart',this.drawStart)
         debug('drawend',this.drawEnd)
-        debug('lineheight',this.lineHeight)
+        debug('lineheight',this.lineHeight) */
+
         ctx.drawImage(game.textureLoader.textures[this.textureId],this.tex.x,0,1,TEX_HEIGHT,x,this.drawStart,1,this.lineHeight)
     }
 
@@ -150,8 +151,8 @@ class Camera {
             this.wall.y = this.player.pos.y + this.perpWallDist * this.rayDir.y;
         }
         //this.wall.x -= Math.floor(this.wall.x);
-        debug('wallX',this.wall.x)
-        debug('wallY',this.wall.y)
+        /* debug('wallX',this.wall.x)
+        debug('wallY',this.wall.y) */
     }
 
     setTexCoords(){
@@ -159,7 +160,7 @@ class Camera {
         if(this.side == 0 && this.rayDir.x > 0) this.tex.x = TEX_WIDTH - this.tex.x - 1;
         if(this.side == 1 && this.rayDir.y < 0) this.tex.x = TEX_WIDTH - this.tex.x - 1;
 
-        debug('intrisic wall x', this.wall.x)
+        /* debug('intrisic wall x', this.wall.x) */
     }
 
     rayToMap(){
