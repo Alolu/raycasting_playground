@@ -20,6 +20,7 @@ class Camera {
     deltaDist = new Vector2D();
     wall = new Vector2D();
     tex = new Vector2D();
+    scene;
     buffer = [];
 
     update(){
@@ -124,6 +125,7 @@ class Camera {
         let step = 1 * TEX_HEIGHT / this.lineHeight;
         let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
         let texValue = 0;
+        let sceneIndex;
         debug('draw start', this.drawStart);
         debug('draw end', this.drawEnd);
         debug('line height', this.lineHeight);
@@ -138,7 +140,11 @@ class Camera {
             texPos += step;
             let color = game.textureLoader.textures[this.textureId][this.tex.y][this.tex.x]
             //if(this.side == 1) color = (color >> 1) & 8355711;
-            this.buffer[y][x] = color;
+            sceneIndex = 4 * (x + y * SCREEN_WIDTH);
+            this.scene.data[sceneIndex    ] = color[0]
+            this.scene.data[sceneIndex + 1] = color[1]
+            this.scene.data[sceneIndex + 2] = color[2]
+            this.scene.data[sceneIndex + 3] = color[3]
         }
         
         debug('tex value',texValue)
@@ -190,23 +196,12 @@ class Camera {
     }
 
     drawBuffer(){
-        let scene = ctx.createImageData(SCREEN_WIDTH,SCREEN_HEIGHT);
-        let sceneIndex;
-        for(let y = 0; y < this.buffer.length; y++){
-            for(let x = 0; x < this.buffer[y].length; x++){
-                sceneIndex = 4 * (x + y * SCREEN_WIDTH);
-                scene.data[sceneIndex    ] = this.buffer[y][x][0]
-                scene.data[sceneIndex + 1] = this.buffer[y][x][1]
-                scene.data[sceneIndex + 2] = this.buffer[y][x][2]
-                scene.data[sceneIndex + 3] = this.buffer[y][x][3]
-            }
-        }
-
-        ctx.putImageData(scene,0,0);
+        ctx.putImageData(this.scene,0,0);
     }
 
     resetBuffer(){
-        this.buffer = Array.apply(null, Array(SCREEN_HEIGHT)).map(function () {return 0})
-        for(let x = 0; x < this.buffer.length; x++) this.buffer[x] = Array.apply(null, Array(SCREEN_WIDTH)).map(function () {return 0})
+        this.scene = ctx.createImageData(SCREEN_WIDTH,SCREEN_HEIGHT);
+        //this.buffer = Array.apply(null, Array(SCREEN_HEIGHT)).map(function () {return 0})
+        //for(let x = 0; x < this.buffer.length; x++) this.buffer[x] = Array.apply(null, Array(SCREEN_WIDTH)).map(function () {return 0})
     }
 }
