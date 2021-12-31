@@ -119,33 +119,6 @@ class Camera {
 
     }
 
-    drawTexture(x){
-        let step = 1 * TEX_HEIGHT / this.lineHeight;
-        let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
-        let texValue = 0;
-        this.buffer = []
-        debug('draw start', this.drawStart);
-        debug('draw end', this.drawEnd);
-        debug('line height', this.lineHeight);
-        debug('tex pos', texPos);
-        debug('tex step',step)
-        debug('tex id',this.textureId)
-        //debug('tex exists ?',Boolean(game.textureLoader.textures[this.textureId]))
-
-        for(let y = this.drawStart; y < this.drawEnd; y++){
-            this.tex.y = parseInt(texPos) & (TEX_HEIGHT - 1);
-            texPos += step;
-            let color = game.textureLoader.textures[this.textureId][TEX_HEIGHT * this.tex.y + this.tex.x]
-            //if(this.side == 1) color = (color >> 1) & 8355711;
-            //this.buffer.push(...decToRGB(color));
-            //debug('r',decToRGB(color));
-        }
-        
-        debug('tex value',texValue)
-        debug('texture x',this.tex.x)
-        debug('texture y',this.tex.y)
-    }
-
     setDrawBoundary(){
         this.drawStart = -this.lineHeight / 2 + SCREEN_HEIGHT / 2
         if(this.drawStart < 0) this.drawStart = 0;
@@ -157,7 +130,11 @@ class Camera {
     drawLine(x){
         let step = TEX_HEIGHT / this.lineHeight;
         let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
-        this.tex.y = Math.floor(texPos) & (TEX_HEIGHT - 1);
+        this.tex.y = parseInt(texPos) & (TEX_HEIGHT - 1);
+        debug('tex y',this.tex.y)
+        debug('drawstart',this.drawStart)
+        debug('drawend',this.drawEnd)
+        debug('lineheight',this.lineHeight)
         ctx.drawImage(game.textureLoader.textures[this.textureId],this.tex.x,this.tex.y,1,TEX_HEIGHT,x,this.drawStart,1,this.lineHeight)
     }
 
