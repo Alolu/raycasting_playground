@@ -10,7 +10,15 @@ class Player {
         this.setControls();
     }
 
+    PRESSED_CONTROLS = {
+        FORWARD: false,
+        BACK: false,
+        RIGHT: false,
+        LEFT: false,
+    }
+
     PLAYER_STATE = playerConstants.IDLE;
+    PLAYER_STRAFE_STATE = playerConstants.STRAFE_IDLE;
     oldMovement = new Vector2D()
     rotatespeed = 0;
 
@@ -18,12 +26,13 @@ class Player {
         addEventListener('keydown',(e)=>{
             if(e.key == 'w' || e.key == 'ArrowUp') this.PLAYER_STATE = playerConstants.FORWARD
             if(e.key == 's' || e.key == 'ArrowDown') this.PLAYER_STATE = playerConstants.BACK
-            if(e.key == 'd' || e.key == 'ArrowRight') this.PLAYER_STATE = playerConstants.RIGHT
-            if(e.key == 'a' || e.key == 'ArrowLeft') this.PLAYER_STATE = playerConstants.LEFT
+            if(e.key == 'd' || e.key == 'ArrowRight') this.PLAYER_STRAFE_STATE = playerConstants.RIGHT
+            if(e.key == 'a' || e.key == 'ArrowLeft') this.PLAYER_STRAFE_STATE = playerConstants.LEFT
         })
 
         addEventListener('keyup', (e)=>{
-            this.PLAYER_STATE = playerConstants.IDLE;
+            if(['w','s','ArrowUp','ArrowDown'].includes(e.key))this.PLAYER_STATE = playerConstants.IDLE;
+            if(['a','d','ArrowRight','ArrowLeft'].includes(e.key))this.PLAYER_STRAFE_STATE = playerConstants.STRAFE_IDLE;
         })
 
         addEventListener('mousemove', (e)=> {
@@ -39,6 +48,9 @@ class Player {
 
     update(){
         let dir = this.dir.multiplyNew(movespeed);
+        let strafedir = this.dir.multiplyNew(movespeed / 2).rotate(30);
+
+
         switch (this.PLAYER_STATE) {
             case playerConstants.FORWARD:
                 if(gamemap[Math.floor(this.pos.x + dir.x)][Math.floor(this.pos.y)]) dir.x = 0;
@@ -51,14 +63,22 @@ class Player {
                 if(gamemap[Math.floor(this.pos.x)][Math.floor(this.pos.y - dir.y)]) dir.y = 0;
                 this.pos.substract(dir)
                 break;
-            
+        
+            default:
+                break;
+        }
+
+        switch (this.PLAYER_STRAFE_STATE) {
             case playerConstants.RIGHT:
-                
+                if(gamemap[Math.floor(this.pos.x - strafedir.x)][Math.floor(this.pos.y)]) strafedir.x = 0;
+                if(gamemap[Math.floor(this.pos.x)][Math.floor(this.pos.y - strafedir.y)]) strafedir.y = 0;
+                this.pos.substract(strafedir)
                 break;
         
             case playerConstants.LEFT:
-                this.dir.rotate(-rotatespeed);
-                this.fov.rotate(-rotatespeed);
+                if(gamemap[Math.floor(this.pos.x + strafedir.x)][Math.floor(this.pos.y)]) strafedir.x = 0;
+                if(gamemap[Math.floor(this.pos.x)][Math.floor(this.pos.y + strafedir.y)]) strafedir.y = 0;
+                this.pos.add(strafedir)
                 break;
         
             default:
