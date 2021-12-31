@@ -11,28 +11,28 @@ class Player {
     }
 
     PRESSED_CONTROLS = {
-        FORWARD: false,
-        BACK: false,
-        RIGHT: false,
-        LEFT: false,
+        REGULAR:[],
+        STRAFE:[],
     }
 
     PLAYER_STATE = playerConstants.IDLE;
-    PLAYER_STRAFE_STATE = playerConstants.STRAFE_IDLE;
+    PLAYER_STRAFE_STATE = playerConstants.IDLE;
     oldMovement = new Vector2D()
     rotatespeed = 0;
 
     setControls() {
         addEventListener('keydown',(e)=>{
-            if(e.key == 'w' || e.key == 'ArrowUp') this.PLAYER_STATE = playerConstants.FORWARD
-            if(e.key == 's' || e.key == 'ArrowDown') this.PLAYER_STATE = playerConstants.BACK
-            if(e.key == 'd' || e.key == 'ArrowRight') this.PLAYER_STRAFE_STATE = playerConstants.RIGHT
-            if(e.key == 'a' || e.key == 'ArrowLeft') this.PLAYER_STRAFE_STATE = playerConstants.LEFT
+            if(e.key == 'w' || e.key == 'ArrowUp') this.addControl('REGULAR',controlConstants.FORWARD)
+            if(e.key == 's' || e.key == 'ArrowDown') this.addControl('REGULAR',controlConstants.BACK)
+            if(e.key == 'd' || e.key == 'ArrowRight') this.addControl('STRAFE',controlConstants.RIGHT)
+            if(e.key == 'a' || e.key == 'ArrowLeft') this.addControl('STRAFE',controlConstants.LEFT)
         })
 
         addEventListener('keyup', (e)=>{
-            if(['w','s','ArrowUp','ArrowDown'].includes(e.key))this.PLAYER_STATE = playerConstants.IDLE;
-            if(['a','d','ArrowRight','ArrowLeft'].includes(e.key))this.PLAYER_STRAFE_STATE = playerConstants.STRAFE_IDLE;
+            if(e.key == 'w' || e.key == 'ArrowUp') this.removeControl('REGULAR',controlConstants.FORWARD)
+            if(e.key == 's' || e.key == 'ArrowDown') this.removeControl('REGULAR',controlConstants.BACK)
+            if(e.key == 'd' || e.key == 'ArrowRight') this.removeControl('STRAFE',controlConstants.RIGHT)
+            if(e.key == 'a' || e.key == 'ArrowLeft') this.removeControl('STRAFE',controlConstants.LEFT)
         })
 
         addEventListener('mousemove', (e)=> {
@@ -50,6 +50,7 @@ class Player {
         let dir = this.dir.multiplyNew(movespeed);
         let strafedir = this.dir.multiplyNew(movespeed / 2).rotate(30);
 
+        this.updatePlayerState()
 
         switch (this.PLAYER_STATE) {
             case playerConstants.FORWARD:
@@ -87,4 +88,44 @@ class Player {
 
         debug('delta',this.rotatespeed)
     }
+
+    updatePlayerState(){
+        switch (this.PRESSED_CONTROLS.REGULAR.at(-1)) {
+            case controlConstants.FORWARD:
+                this.PLAYER_STATE = playerConstants.FORWARD
+                break;
+
+            case controlConstants.BACK:
+                this.PLAYER_STATE = playerConstants.BACK
+                break;
+
+            default:
+                this.PLAYER_STATE = playerConstants.IDLE
+                break;
+        }
+
+        switch (this.PRESSED_CONTROLS.STRAFE.at(-1)) {
+            case controlConstants.RIGHT:
+                this.PLAYER_STRAFE_STATE = playerConstants.RIGHT
+                break;
+
+            case controlConstants.LEFT:
+                this.PLAYER_STRAFE_STATE = playerConstants.LEFT
+                break;
+
+            default:
+                this.PLAYER_STRAFE_STATE = playerConstants.IDLE
+                break;
+        }
+    }
+
+    removeControl(type,value){
+        var i = this.PRESSED_CONTROLS[type].indexOf(value);
+        if (i !== -1) this.PRESSED_CONTROLS[type].splice(i, 1);
+    }
+
+    addControl(type,value){
+        if(!this.PRESSED_CONTROLS[type].includes(value)) this.PRESSED_CONTROLS[type].push(value)
+    }
+    
 }
