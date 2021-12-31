@@ -15,7 +15,7 @@ class TextureLoader {
 
         for (let i = 0; i <= maxTexture; i++) {
                 var texture = new Image();
-                texture.src = 'textures/' + i + '.png';
+                texture.src = TEXTURE_FOLDER + i + '.png';
                 this.textures.push(texture)
         }
     }

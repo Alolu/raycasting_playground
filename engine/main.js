@@ -3,8 +3,10 @@ const SCREEN_HEIGHT = window.innerHeight;
 const SCREEN = document.createElement('canvas');
 const ctx = SCREEN.getContext('2d');
 
-const TEX_WIDTH = 64;
-const TEX_HEIGHT = 64
+const TEX_WIDTH = 512;
+const TEX_HEIGHT = 512;
+
+const TEXTURE_FOLDER = '/textures/hq/'
 
 let framespeed;
 
