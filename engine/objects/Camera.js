@@ -124,7 +124,7 @@ class Camera {
         if(this.drawStart < 0) this.drawStart = 0;
         this.drawEnd = this.lineHeight / 2 + SCREEN_HEIGHT / 2
         if(this.drawEnd < 0) this.drawEnd = SCREEN_HEIGHT - 1;
-        if(this.drawEnd > SCREEN_HEIGHT) this.drawEnd = SCREEN_HEIGHT;
+        if(this.drawEnd > SCREEN_HEIGHT - 1) this.drawEnd = SCREEN_HEIGHT - 1;
     }
 
     drawLine(x){
@@ -132,10 +132,12 @@ class Camera {
         let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
         this.tex.y = parseInt(texPos) & (TEX_HEIGHT - 1);
         debug('tex y',this.tex.y)
+        debug('tex pos',parseInt(texPos))
+        debug('step', step)
         debug('drawstart',this.drawStart)
         debug('drawend',this.drawEnd)
         debug('lineheight',this.lineHeight)
-        ctx.drawImage(game.textureLoader.textures[this.textureId],this.tex.x,this.tex.y,1,TEX_HEIGHT,x,this.drawStart,1,this.lineHeight)
+        ctx.drawImage(game.textureLoader.textures[this.textureId],this.tex.x,this.tex.y,1,TEX_HEIGHT,x,Math.floor(this.drawStart),1,this.lineHeight)
     }
 
     setWallCoords(){
