@@ -6,7 +6,7 @@ class Map {
 
     MAP_HEIGHT = 150
     MAP_WIDTH = 200
-    MAP_POS = new Vector2D(10,SCREEN_HEIGHT - this.MAP_HEIGHT - 10)
+    MAP_POS = new Vector3(10,SCREEN_HEIGHT - this.MAP_HEIGHT - 10)
 
     MAP_LENGTH_W = gamemap[0].length;
     MAP_LENGTH_H = gamemap.length;
@@ -77,8 +77,6 @@ class Map {
         rayGradient.addColorStop(1,'black')
         
         ctx.strokeStyle = rayGradient
-
-        debug('ray queue', this.raysQueue.length)
         
         for(let ray of this.raysQueue){
             this.moveToPlayer();
@@ -93,6 +91,6 @@ class Map {
     }
 
     vectorToRatio(vec){
-        return new Vector2D(vec.x * this.W_RATIO, vec.y * this.H_RATIO)
+        return new Vector3(vec.x * this.W_RATIO, vec.y * this.H_RATIO)
     }
 }

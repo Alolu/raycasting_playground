@@ -1,7 +1,8 @@
 class TextureLoader {
     constructor(){
         //Im probably doing something dumb right here lol
-        this.textures = []
+        this.textures = [];
+        this.loaded = false;
         this.loadTextures()
     }
 
@@ -17,6 +18,8 @@ class TextureLoader {
                 var texture = new Image();
                 texture.src = TEXTURE_FOLDER + i + '.png';
                 this.textures.push(texture)
+
+                this.loaded = this.textures.length - 1 == maxTexture
         }
     }
 

@@ -3,9 +3,9 @@ const playerSize = 1
 
 class Player {
     constructor(pos,dir,fov){
-        this.pos = pos || new Vector2D()
-        this.dir = dir || new Vector2D(1,0)
-        this.fov = fov || new Vector2D(0,0.66)
+        this.pos = pos || new Vector3()
+        this.dir = dir || new Vector3(1,0)
+        this.fov = fov || new Vector3(0,0.66)
 
         this.setControls();
     }
@@ -17,7 +17,7 @@ class Player {
 
     PLAYER_STATE = playerConstants.IDLE;
     PLAYER_STRAFE_STATE = playerConstants.IDLE;
-    oldMovement = new Vector2D()
+    oldMovement = new Vector3()
     rotatespeed = 0;
 
     setControls() {
@@ -86,7 +86,7 @@ class Player {
                 break;
         }
 
-        debug('delta',this.rotatespeed)
+        //debug('delta',this.rotatespeed)
     }
 
     updatePlayerState(){

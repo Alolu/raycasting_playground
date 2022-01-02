@@ -2,7 +2,7 @@ class Camera {
     constructor(game,pos){
         this.game = game;
         this.player = this.game.player;
-        this.pos = pos || Vector2D();
+        this.pos = pos || new Vector3();
     }
 
     perpWallDist;
@@ -13,13 +13,13 @@ class Camera {
     textureId;
     drawEnd;
     color;
-    sideDist = new Vector2D();
-    step = new Vector2D();
-    rayDir = new Vector2D();
-    intPos = new Vector2D();
-    deltaDist = new Vector2D();
-    wall = new Vector2D();
-    tex = new Vector2D();
+    sideDist = new Vector3();
+    step = new Vector3();
+    rayDir = new Vector3();
+    intPos = new Vector3();
+    deltaDist = new Vector3();
+    wall = new Vector3();
+    tex = new Vector3();
     buffer = [];
 
     update(){
@@ -164,7 +164,7 @@ class Camera {
     }
 
     rayToMap(){
-        let mapRay = new Vector2D();
+        let mapRay = new Vector3();
 
         if(this.side == 0) mapRay.set(this.wall.y,this.wall.x)
         else mapRay.set(this.wall.x, this.wall.y)

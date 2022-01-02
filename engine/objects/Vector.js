@@ -1,20 +1,21 @@
-class Vector2D {
+class Vector3 {
     /**
      * 
      * @param {Number} [x=0] - The x position of the vector
      * @param {Number} [y=0] - The y position of the vector
      */
-    constructor(x,y) {
+    constructor(x,y,z) {
         this.x = x || 0;
         this.y = y || 0;
+        this.z = z || 0;
     }
 
     /**
      * 
-     * @param {Vector2D} vector 
+     * @param {Vector3} vector 
      */
     addNew(vector) {
-        let newVec = new Vector2D(this.x,this.y)
+        let newVec = new Vector3(this.x,this.y,this.z)
         newVec.add(vector)
 
         return newVec;
@@ -22,10 +23,10 @@ class Vector2D {
 
     /**
      * 
-     * @param {Vector2D} vector 
+     * @param {Vector3} vector 
      */
      substractNew(vector) {
-        let newVec = new Vector2D(this.x,this.y)
+        let newVec = new Vector3(this.x,this.y,this.z)
         newVec.substract(vector)
 
         return newVec;
@@ -33,22 +34,24 @@ class Vector2D {
 
     /**
      * 
-     * @param {Vector2D} vector 
+     * @param {Vector3} vector 
      */
     add(vector) {
         this.x+=vector.x
         this.y+=vector.y
+        this.z+=vector.z
 
         return this;
     }
 
     /**
      * 
-     * @param {Vector2D} vector 
+     * @param {Vector3} vector 
      */
     substract(vector) {
         this.x-=vector.x
         this.y-=vector.y
+        this.z-=vector.z
 
         return this;
     }
@@ -62,19 +65,37 @@ class Vector2D {
     }
 
     multiplyNew(factor) {
-        let newVec = new Vector2D(this.x,this.y)
-        newVec.x = this.x * factor
-        newVec.y = this.y * factor
+        let newVec = new Vector3(this.x,this.y,this.z)
+        newVec.multiply(factor)
         
         return newVec;
     }
 
-    clone(){
-        return new Vector2D(this.x,this.y)
+    multiply(factor){
+        this.x = this.x * factor
+        this.y = this.y * factor
+        this.z = this.z * factor
+
+        return this
     }
 
-    set(x,y){
-        this.x = x;
-        this.y = y;
+    clone(){
+        return new Vector3(this.x,this.y,this.z)
+    }
+
+    set(x,y,z){
+        this.x = x || this.x;
+        this.y = y || this.y;
+        this.z = z || this.z;
+
+        return this;
+    }
+
+    toInt(){
+        this.x = Math.floor(this.x)
+        this.y = Math.floor(this.y)
+        this.z = Math.floor(this.z)
+
+        return this;
     }
  }

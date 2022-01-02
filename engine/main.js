@@ -17,7 +17,8 @@ let rotatespeed;
 
 let debugQueue = [], debugIdQueue = [];
 let debugTextSize = 20,
-    debugColor = 'black'
+    debugColor = 'black',
+    debugEnabled = true
 
 function update(time){
     invalidateCanvas();
@@ -25,12 +26,15 @@ function update(time){
     framespeed = (time - oldtime) / 1000;
     rotatespeed = framespeed * 15
     movespeed = framespeed * 4
+    oldtime = time
     
     game.update();
-    displayDebug();
 
-    oldtime = time
-    debug('FPS',1/framespeed)
+    debug('FPS',parseInt(1/framespeed))
+    debug('Screen Width',SCREEN_WIDTH)
+    debug('Screen Height',SCREEN_HEIGHT)
+    
+    displayDebug();
     requestAnimationFrame(update);
 }
 
@@ -67,6 +71,7 @@ function write(text,x,y,color = 'white',font='10px'){
 }
 
 function debug(id,str){
+    if(!debugEnabled) return;
     if(debugIdQueue.includes(id)) return;
     debugIdQueue.push(id);
     debugQueue.push(`${id}: ${str}`);
