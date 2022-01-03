@@ -23,7 +23,11 @@ class Camera {
     buffer = [];
 
     xDebug = SCREEN_WIDTH/2;
-    intersectionsDebug = []
+    intersectionsDebug = {
+        x: [],
+        y: [],
+    }
+    gridDebug = [];
 
     update(){
         for(let x = 0; x < SCREEN_WIDTH; x++){
@@ -40,12 +44,14 @@ class Camera {
             
             while(hit == 0) {
                 if(this.sideDist.x < this.sideDist.y){
-                    this.intersectionsDebug.push(this.sideDist.x)
+                    if(x == this.xDebug) this.intersectionsDebug.x.push(this.sideDist.x)
+                    if(debugEnabled) this.gridDebug.push(this.sideDist.x)
                     this.sideDist.x += this.deltaDist.x;
                     this.intPos.x += this.step.x;
                     this.side = 0;
                 } else {
-                    this.intersectionsDebug.push(this.sideDist.y)
+                    if(x == this.xDebug) this.intersectionsDebug.y.push(this.sideDist.y)
+                    if(debugEnabled) this.gridDebug.push(this.sideDist.y)
                     this.sideDist.y += this.deltaDist.y;
                     this.intPos.y += this.step.y;
                     this.side = 1;
@@ -77,6 +83,9 @@ class Camera {
             if(debugEnabled && this.xDebug == x){
                 this.drawDebugLine();
                 this.drawDebugIntersection();
+            }
+            if(debugEnabled){
+                this.drawDebugGrid(x);
             }
 
             /* debug('perpWallDist',this.perpWallDist)
@@ -151,6 +160,12 @@ class Camera {
         ctx.drawImage(game.textureLoader.textures[this.textureId],this.tex.x,0,1,TEX_HEIGHT,x,this.drawStart,1,this.lineHeight)
     }
 
+    calcDrawEnd(intersec){
+        let lh = Math.floor(SCREEN_HEIGHT / intersec)
+        let de = lh / 2 + SCREEN_HEIGHT / 2
+        return de;
+    }
+
     drawDebugLine(){
         ctx.beginPath();
         ctx.strokeStyle = 'white'
@@ -162,10 +177,36 @@ class Camera {
 
     drawDebugIntersection(){
         ctx.beginPath();
-        ctx.fillStyle = 'red'
+        for(let i = 0; i < this.intersectionsDebug.x.length; i++){
+            ctx.fillStyle = 'red'
+            let lh = Math.floor(SCREEN_HEIGHT / this.intersectionsDebug.x[i])
+            let de = lh / 2 + SCREEN_HEIGHT / 2
+            ctx.fillRect(this.xDebug - 5,de - 5,10,10)
+            debug('de',de)
+        }
+        for(let i = 0; i < this.intersectionsDebug.y.length; i++){
+            ctx.fillStyle = 'green'
+            let lh = Math.floor(SCREEN_HEIGHT / this.intersectionsDebug.y[i])
+            let de = lh / 2 + SCREEN_HEIGHT / 2
+            ctx.fillRect(this.xDebug - 5,de - 5,10,10)
+            debug('de',de)
+        }
         ctx.fillRect(this.xDebug - 5,this.drawEnd - 5,10,10)
         ctx.closePath();
-        this.intersectionsDebug = [];
+        this.intersectionsDebug.x = [];
+        this.intersectionsDebug.y = [];
+    }
+
+    drawDebugGrid(x){
+        let de;
+        ctx.beginPath();
+        ctx.fillStyle = 'white';
+        for(let i = 0; i < this.gridDebug.length; i++){
+            de = this.calcDrawEnd(this.gridDebug[i])
+            ctx.fillRect(x,de,1,1)
+        }
+        this.gridDebug = [];
+        ctx.closePath();
     }
 
     setWallCoords(){
