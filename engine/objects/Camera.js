@@ -163,7 +163,7 @@ class Camera {
     drawDebugIntersection(){
         ctx.beginPath();
         ctx.fillStyle = 'red'
-        ctx.fillRect(this.xDebug,this.wall.y + SCREEN_HEIGHT/2,10,10)
+        ctx.fillRect(this.xDebug - 5,this.drawEnd - 5,10,10)
         ctx.closePath();
         this.intersectionsDebug = [];
     }

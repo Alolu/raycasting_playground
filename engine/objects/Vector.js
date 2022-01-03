@@ -57,6 +57,9 @@ class Vector3 {
     }
 
     rotate(direction) {
+
+        direction = direction * (Math.PI/180)
+
         let oldX = this.x;
         this.x = this.x * Math.cos(direction) - this.y * Math.sin(direction);
         this.y = oldX * Math.sin(direction) + this.y * Math.cos(direction);

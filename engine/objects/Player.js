@@ -50,7 +50,7 @@ class Player {
 
     update(){
         let dir = this.dir.multiplyNew(movespeed);
-        let strafedir = this.dir.multiplyNew(movespeed / 2).rotate(30);
+        let strafedir = this.dir.multiplyNew(movespeed / 2).rotate(-90);
 
         this.updatePlayerState()
 
