@@ -35,6 +35,7 @@ function update(time){
     debug('Screen Width',SCREEN_WIDTH)
     debug('Screen Height',SCREEN_HEIGHT)
     
+    write('The drop in FPS is due to the debugging grid, TODO: improve grid generation + add toggle grid button',10,SCREEN_HEIGHT - 210,'white','30pt')
     displayDebug();
     requestAnimationFrame(update);
 }
