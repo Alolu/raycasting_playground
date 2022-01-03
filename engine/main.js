@@ -71,16 +71,19 @@ function write(text,x,y,color = 'white',font='10px'){
     ctx.fillText(text,x,y);
 }
 
-function debug(id,str){
+function debug(id,str,color = debugColor){
     if(!debugEnabled) return;
     if(debugIdQueue.includes(id)) return;
     debugIdQueue.push(id);
-    debugQueue.push(`${id}: ${str}`);
+    debugQueue.push({
+        msg: `${id}: ${str}`, 
+        col: color
+    });
 }
 
 function displayDebug() {
     for(let i = 0; i < debugQueue.length; i++){
-        write(debugQueue[i],10,debugTextSize*(i+1),debugColor,debugTextSize + 'px')
+        write(debugQueue[i].msg,10,debugTextSize*(i+1),debugQueue[i].col,debugTextSize + 'px')
     }
     debugIdQueue = [];
     debugQueue = [];

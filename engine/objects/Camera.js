@@ -21,13 +21,16 @@ class Camera {
     wall = new Vector3();
     tex = new Vector3();
     buffer = [];
+    firstIter = true;
 
     xDebug = SCREEN_WIDTH/2;
+    xDebugdrawEnd = 0;
     intersectionsDebug = {
         x: [],
         y: [],
     }
     gridDebug = [];
+    isCount = 0;
 
     update(){
         for(let x = 0; x < SCREEN_WIDTH; x++){
@@ -76,14 +79,11 @@ class Camera {
             this.setTexCoords();
             this.setDrawBoundary();
             //this.drawTexture(x);
+            if(x == this.xDebug) this.xDebugdrawEnd = this.drawEnd;
 
             this.setColor();
             this.drawLine(x);
 
-            if(debugEnabled && this.xDebug == x){
-                this.drawDebugLine();
-                this.drawDebugIntersection();
-            }
             if(debugEnabled){
                 this.drawDebugGrid(x);
             }
@@ -94,6 +94,12 @@ class Camera {
             debug('cell pos x', this.intPos.x)
             debug('cell pos y', this.intPos.y) */
         }
+        if(debugEnabled){
+            this.drawDebugLine();
+            this.drawDebugIntersection();
+        }
+        this.firstIter = false;
+        debug('isCount',this.isCount,'red')
     }
 
     setRaydir(){
@@ -170,7 +176,7 @@ class Camera {
         ctx.beginPath();
         ctx.strokeStyle = 'white'
         ctx.moveTo(SCREEN_WIDTH/2,SCREEN_HEIGHT)
-        ctx.lineTo(this.xDebug,this.drawEnd)
+        ctx.lineTo(this.xDebug,this.xDebugdrawEnd)
         ctx.stroke();
         ctx.closePath();
     }
@@ -191,7 +197,6 @@ class Camera {
             ctx.fillRect(this.xDebug - 5,de - 5,10,10)
             debug('de',de)
         }
-        ctx.fillRect(this.xDebug - 5,this.drawEnd - 5,10,10)
         ctx.closePath();
         this.intersectionsDebug.x = [];
         this.intersectionsDebug.y = [];
@@ -202,6 +207,7 @@ class Camera {
         ctx.beginPath();
         ctx.fillStyle = 'white';
         for(let i = 0; i < this.gridDebug.length; i++){
+            if(this.firstIter) this.isCount++
             de = this.calcDrawEnd(this.gridDebug[i])
             ctx.fillRect(x,de,1,1)
         }
