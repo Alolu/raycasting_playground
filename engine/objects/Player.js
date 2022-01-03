@@ -36,6 +36,8 @@ class Player {
         })
 
         addEventListener('mousemove', (e)=> {
+            if(!pointerEnabled) return;
+            
             this.rotatespeed = e.movementX * framespeed;
 
             this.dir.rotate(this.rotatespeed);

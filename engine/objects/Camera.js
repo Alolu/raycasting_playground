@@ -22,6 +22,9 @@ class Camera {
     tex = new Vector3();
     buffer = [];
 
+    xDebug = SCREEN_WIDTH/2;
+    intersectionsDebug = []
+
     update(){
         for(let x = 0; x < SCREEN_WIDTH; x++){
 
@@ -37,10 +40,12 @@ class Camera {
             
             while(hit == 0) {
                 if(this.sideDist.x < this.sideDist.y){
+                    this.intersectionsDebug.push(this.sideDist.x)
                     this.sideDist.x += this.deltaDist.x;
                     this.intPos.x += this.step.x;
                     this.side = 0;
                 } else {
+                    this.intersectionsDebug.push(this.sideDist.y)
                     this.sideDist.y += this.deltaDist.y;
                     this.intPos.y += this.step.y;
                     this.side = 1;
@@ -68,6 +73,11 @@ class Camera {
 
             this.setColor();
             this.drawLine(x);
+
+            if(debugEnabled && this.xDebug == x){
+                this.drawDebugLine();
+                this.drawDebugIntersection();
+            }
 
             /* debug('perpWallDist',this.perpWallDist)
             debug('player pos x',this.player.pos.x)
@@ -139,6 +149,23 @@ class Camera {
         debug('lineheight',this.lineHeight) */
 
         ctx.drawImage(game.textureLoader.textures[this.textureId],this.tex.x,0,1,TEX_HEIGHT,x,this.drawStart,1,this.lineHeight)
+    }
+
+    drawDebugLine(){
+        ctx.beginPath();
+        ctx.strokeStyle = 'white'
+        ctx.moveTo(SCREEN_WIDTH/2,SCREEN_HEIGHT)
+        ctx.lineTo(this.xDebug,this.drawEnd)
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    drawDebugIntersection(){
+        ctx.beginPath();
+        ctx.fillStyle = 'red'
+        ctx.fillRect(this.xDebug,this.wall.y + SCREEN_HEIGHT/2,10,10)
+        ctx.closePath();
+        this.intersectionsDebug = [];
     }
 
     setWallCoords(){

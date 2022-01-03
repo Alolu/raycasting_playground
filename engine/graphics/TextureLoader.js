@@ -2,8 +2,10 @@ class TextureLoader {
     constructor(){
         //Im probably doing something dumb right here lol
         this.textures = [];
+        this.floorTexture = null;
         this.loaded = false;
         this.loadTextures()
+        this.loadFloorTexture()
     }
 
     loadTextures(){
@@ -18,9 +20,35 @@ class TextureLoader {
                 var texture = new Image();
                 texture.src = TEXTURE_FOLDER + i + '.png';
                 this.textures.push(texture)
-
-                this.loaded = this.textures.length - 1 == maxTexture
         }
+    }
+
+    loadFloorTexture(){
+        let tmpCanvas = document.createElement('canvas');
+        tmpCanvas.height = TEX_HEIGHT;
+        tmpCanvas.width = TEX_WIDTH;
+
+        let tpmctx = tmpCanvas.getContext('2d');
+
+        
+                
+        let texData = [];
+        let texture = new Image();
+        texture.src = 'textures/hq/0.png';
+
+        texture.onload = () => {
+            tpmctx.drawImage(texture, 0, 0);
+
+            for(let iy = 0; iy < TEX_HEIGHT; iy++){
+                texData[iy] = []
+                for(let ix = 0; ix < TEX_WIDTH; ix++){
+                    texData[iy][ix] = tpmctx.getImageData(ix,iy,1,1).data;
+                }
+            }
+            
+            this.floorTexture = texData
+            this.loaded = true;
+        };
     }
 
     generateTextures(){

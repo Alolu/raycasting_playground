@@ -12,7 +12,7 @@ class Game {
 
     update() {
         if(!this.textureLoader.loaded) return;
-        this.floorCast.update();
+        //this.floorCast.update();
         this.camera.update();
         this.map.update();
         this.player.update();

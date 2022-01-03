@@ -14,14 +14,15 @@ const game = new Game();
 
 let oldtime = 0;
 let rotatespeed;
-
+let pointerEnabled = false;
 let debugQueue = [], debugIdQueue = [];
 let debugTextSize = 20,
-    debugColor = 'black',
+    debugColor = 'white',
     debugEnabled = true
 
 function update(time){
     invalidateCanvas();
+    invalidatePointer();
     
     framespeed = (time - oldtime) / 1000;
     rotatespeed = framespeed * 15
@@ -55,10 +56,10 @@ function init(){
 
 function invalidateCanvas(){
     ctx.beginPath()
-    ctx.fillStyle = '#BAF8FF'
-    ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT/2);
+    //ctx.fillStyle = '#BAF8FF'
+    //ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT/2);
     ctx.fillStyle = '#333333'
-    ctx.fillRect(0,SCREEN_HEIGHT/2,SCREEN_WIDTH,SCREEN_HEIGHT);
+    ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
     //ctx.fillStyle = 'white'
     //ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 }
@@ -87,6 +88,14 @@ function displayDebug() {
 
 function decToRGB(decimal) {
     return [(decimal >> 16) & 0xff,(decimal >> 8) & 0xff,decimal & 0xff]
+}
+
+function invalidatePointer(){
+    if(document.pointerLockElement === SCREEN || document.mozPointerLockElement === SCREEN) {
+        pointerEnabled = true;
+    } else {
+        pointerEnabled = false;
+    }
 }
 
 init();

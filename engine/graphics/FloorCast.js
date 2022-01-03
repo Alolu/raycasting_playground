@@ -1,7 +1,8 @@
 class FloorCast {
 
-    constructor(game){
+    constructor(game) {
         this.player = game.player
+        this.buffer = ctx.createImageData(SCREEN_WIDTH, SCREEN_HEIGHT)
     }
 
     floorStep = new Vector3();
@@ -10,13 +11,21 @@ class FloorCast {
     floor = new Vector3();
     cell = new Vector3();
     texture = new Vector3();
-    
 
     floorTextureId = 3;
     ceilingTextureId = 6;
 
-    update(){
-        for(let y = 0; y < 24; y++){
+    setBufferData(imageData,x,y,pixel){
+        let idx = 4 * (x + y * SCREEN_WIDTH);
+
+        imageData.data[idx] = pixel[0]
+        imageData.data[idx + 1] = pixel[1]
+        imageData.data[idx + 2] = pixel[2]
+        imageData.data[idx + 3] = pixel[3]
+    }
+
+    update() {
+        for (let y = 0; y < SCREEN_HEIGHT; y++) {
 
             let p = y - SCREEN_HEIGHT / 2;
             let rowDistance = this.player.pos.z / p;
@@ -33,66 +42,36 @@ class FloorCast {
             this.floor.x = this.player.pos.x + rowDistance * this.rayDirA.x;
             this.floor.y = this.player.pos.y + rowDistance * this.rayDirA.y;
 
-            this.cell = this.floor.clone().toInt()
-        
-                // get the texture coordinate from the fractional part
-            this.texture.x = Math.floor(TEX_WIDTH * (this.floor.x - this.cell.x)) & (TEX_WIDTH - 1);
-            this.texture.y = Math.floor(TEX_HEIGHT * (this.floor.y - this.cell.y)) & (TEX_HEIGHT - 1);
+            /* for(let tile = 0; tile < gamemap.length; tile++){
+                ctx.save()
+                ctx.setTransform(1,0,0,0.5,0,TEX_HEIGHT)
+                ctx.drawImage(game.textureLoader.textures[this.floorTextureId],TEX_HEIGHT * y,SCREEN_HEIGHT-TEX_HEIGHT)
+                ctx.restore()
+            } */
 
-            let texLength = Math.floor(SCREEN_WIDTH/gamemap.length);
-            let step = this.floorStep * texLength;
+            for (let x = 0; x < SCREEN_WIDTH; x++) {
 
-            for(let x = 0; x < gamemap.length; x++){
-                ctx.drawImage(game.textureLoader.textures[this.floorTextureId],this.texture.x,this.texture.y,TEX_WIDTH,1,this.floor.x * step,y,TEX_WIDTH,1)
-            }
-
-            if(y >= SCREEN_HEIGHT-1) {
-                debug('p',p)
-                debug('rowdist',rowDistance)
-            }
-
-
-            //ctx.drawImage(game.textureLoader.textures[this.floorTextureId],this.texture.x,this.texture.y,TEX_WIDTH,1,this.cell.x * tile * TEX_WIDTH,y,TEX_WIDTH,1)
-
-            debug('floor x',this.floor.x)
-            debug('floor y',this.floor.y)
-
-            debug('floorstep x',this.floorStep.x * TEX_WIDTH)
-            debug('floorstep y',this.floorStep.y * TEX_HEIGHT)
-
-            debug('floortex x',this.texture.x)
-            debug('floortex y',this.texture.y)
-
-            
-
-
-            /* for(let x = 0; x < SCREEN_WIDTH; x++){
-                // the cell coord is simply got from the integer parts of floorX and floorY
-                int cellX = (int)(floorX);
-                int cellY = (int)(floorY);
+                this.cell = this.floor.clone().toInt();
 
                 // get the texture coordinate from the fractional part
-                int tx = (int)(texWidth * (floorX - cellX)) & (texWidth - 1);
-                int ty = (int)(texHeight * (floorY - cellY)) & (texHeight - 1);
+                this.texture.x = Math.floor(TEX_WIDTH * (this.floor.x - this.cell.x)) & (TEX_WIDTH - 1);
+                this.texture.y = Math.floor(TEX_HEIGHT * (this.floor.y - this.cell.y)) & (TEX_HEIGHT - 1);
 
-                floorX += floorStepX;
-                floorY += floorStepY;
-
-                // choose texture and draw the pixel
-                int floorTexture = 3;
-                int ceilingTexture = 6;
-                Uint32 color;
+                this.floor.add(this.floorStep);
 
                 // floor
-                color = texture[floorTexture][texWidth * ty + tx];
-                color = (color >> 1) & 8355711; // make a bit darker
-                buffer[y][x] = color;
+                let pixel = game.textureLoader.floorTexture[this.texture.y][this.texture.x];
+                //pixel = (color >> 1) & 8355711; // make a bit darker
+                this.setBufferData(this.buffer,x,y,pixel)
 
                 //ceiling (symmetrical, at screenHeight - y - 1 instead of y)
-                color = texture[ceilingTexture][texWidth * ty + tx];
-                color = (color >> 1) & 8355711; // make a bit darker
-                buffer[screenHeight - y - 1][x] = color;
-            } */
+                //pixel = texture[ceilingTexture][texWidth * ty + tx];
+                //color = (color >> 1) & 8355711; // make a bit darker
+                this.setBufferData(this.buffer,x,SCREEN_HEIGHT - y - 1,pixel)
+            }
         }
+        ctx.beginPath()
+        ctx.putImageData(this.buffer,0,0)
+        ctx.closePath()
     }
 }
