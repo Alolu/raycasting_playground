@@ -232,7 +232,7 @@ class Camera {
         ctx.strokeStyle = 'red';
         ctx.fillStyle = 'red';
         this.drawDebugGridLine(this.gridDebug.x)
-        debug('gdx 1 length',this.gridDebug.x[0].length)
+        //debug('gdx 1 length',this.gridDebug.x[0].length)
 
         ctx.strokeStyle = 'green';
         ctx.fillStyle = 'green';
