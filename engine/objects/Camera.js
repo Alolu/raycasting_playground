@@ -3,6 +3,12 @@ class Camera {
         this.game = game;
         this.player = this.game.player;
         this.pos = pos || new Vector3();
+
+        addEventListener('keypress',(e)=>{
+            if(e.key == 'r'){
+                this.triggerConsole = true;
+            }
+        })
     }
 
     perpWallDist;
@@ -22,6 +28,7 @@ class Camera {
     tex = new Vector3();
     buffer = [];
     firstIter = true;
+    triggerConsole = false;
 
     xDebug = SCREEN_WIDTH/2;
     xDebugdrawEnd = 0;
@@ -29,7 +36,10 @@ class Camera {
         x: [],
         y: [],
     }
-    gridDebug = [];
+    gridDebug = {
+        x: [],
+        y: [],
+    };
     isCount = 0;
 
     update(){
@@ -44,20 +54,31 @@ class Camera {
             this.setDeltaDist()
 
             this.setStepAndInitialSideDist()
-            
+
+            let whileCountX = 0;
+            let whileCountY = 0;
+
             while(hit == 0) {
                 if(this.sideDist.x < this.sideDist.y){
                     if(x == this.xDebug) this.intersectionsDebug.x.push(this.sideDist.x)
-                    if(debugEnabled) this.gridDebug.push(this.sideDist.x)
+                    if(debugEnabled){
+                        if(!this.gridDebug.x[whileCountX]) this.gridDebug.x[whileCountX] = [new Vector3(x,this.calcDrawEnd(this.sideDist.x))]
+                        else this.gridDebug.x[whileCountX][1] = new Vector3(x,this.calcDrawEnd(this.sideDist.x))
+                    } 
                     this.sideDist.x += this.deltaDist.x;
                     this.intPos.x += this.step.x;
                     this.side = 0;
+                    whileCountX++;
                 } else {
                     if(x == this.xDebug) this.intersectionsDebug.y.push(this.sideDist.y)
-                    if(debugEnabled) this.gridDebug.push(this.sideDist.y)
+                    if(debugEnabled){
+                        if(!this.gridDebug.y[whileCountY]) this.gridDebug.y[whileCountY] = [new Vector3(x,this.calcDrawEnd(this.sideDist.y))]
+                        else this.gridDebug.y[whileCountY][1] = new Vector3(x,this.calcDrawEnd(this.sideDist.y))
+                    } 
                     this.sideDist.y += this.deltaDist.y;
                     this.intPos.y += this.step.y;
                     this.side = 1;
+                    whileCountY++;
                 }
 
                 //If the ray hit into a wall, stop the ray
@@ -84,9 +105,6 @@ class Camera {
             this.setColor();
             this.drawLine(x);
 
-            if(debugEnabled){
-                this.drawDebugGrid(x);
-            }
 
             /* debug('perpWallDist',this.perpWallDist)
             debug('player pos x',this.player.pos.x)
@@ -97,9 +115,17 @@ class Camera {
         if(debugEnabled){
             this.drawDebugLine();
             this.drawDebugIntersection();
+            debug('debug grid len',this.gridDebug.x.length)
+            this.drawDebugGrid();
+            if(this.firstIter) console.log(this.gridDebug)
+            if(this.triggerConsole) console.log(this.gridDebug)
+            this.triggerConsole = false;
+            this.gridDebug.x = []
+            this.gridDebug.y = []
         }
         this.firstIter = false;
         debug('isCount',this.isCount,'red')
+        this.isCount = 0;
     }
 
     setRaydir(){
@@ -202,17 +228,40 @@ class Camera {
         this.intersectionsDebug.y = [];
     }
 
-    drawDebugGrid(x){
-        let de;
-        ctx.beginPath();
-        ctx.fillStyle = 'white';
-        for(let i = 0; i < this.gridDebug.length; i++){
-            if(this.firstIter) this.isCount++
-            de = this.calcDrawEnd(this.gridDebug[i])
-            ctx.fillRect(x,de,1,1)
+    drawDebugGrid(){
+        ctx.strokeStyle = 'red';
+        ctx.fillStyle = 'red';
+        this.drawDebugGridLine(this.gridDebug.x)
+        debug('gdx 1 length',this.gridDebug.x[0].length)
+
+        ctx.strokeStyle = 'green';
+        ctx.fillStyle = 'green';
+        this.drawDebugGridLine(this.gridDebug.y)
+
+        this.gridDebug.x = [];
+        this.gridDebug.y = [];
+    }
+
+    drawDebugGridLine(lineArr){
+        for(let i = 0; i < lineArr.length; i++){
+            this.isCount++
+            let a = lineArr[i][0];
+            let b = lineArr[i][1];
+            if(b){
+                write(`${i + 1}: [${a.x},${a.y}] - [${b.x},${b.y}]`,a.x,a.y)
+                ctx.beginPath()
+                ctx.moveTo(a.x,a.y)
+                debug('grid arr',lineArr.length)
+                ctx.lineTo(b.x,b.y)
+                ctx.stroke()
+                ctx.closePath()
+                //ctx.fillRect(x - 5,this.gridDebug.x[i] - 5,10,10)
+            } else {
+                debug('outlier x',a.x)
+                debug('outlier y',a.y)
+                ctx.fillRect(a.x,a.y,1,1)
+            }
         }
-        this.gridDebug = [];
-        ctx.closePath();
     }
 
     setWallCoords(){

@@ -88,6 +88,9 @@ class Player {
                 break;
         }
 
+        debug('dir x',this.dir.x)
+        debug('dir y',this.dir.y)
+
         //debug('delta',this.rotatespeed)
     }
 
