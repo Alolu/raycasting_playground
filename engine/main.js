@@ -10,8 +10,6 @@ const TEXTURE_FOLDER = './textures/hq/'
 
 let framespeed;
 
-const game = new Game();
-
 let oldtime = 0;
 let rotatespeed;
 let pointerEnabled = false;
@@ -19,6 +17,9 @@ let debugQueue = [], debugIdQueue = [];
 let debugTextSize = 20,
     debugColor = 'white',
     debugEnabled = true
+
+const game = new Game();
+const debugHandler = new DebugHandler(game,debugEnabled);
 
 function update(time){
     invalidateCanvas();
@@ -30,6 +31,7 @@ function update(time){
     oldtime = time
     
     game.update();
+    debugHandler.update();
 
     debug('FPS',parseInt(1/framespeed))
     debug('Screen Width',SCREEN_WIDTH)

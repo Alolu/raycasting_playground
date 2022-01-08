@@ -39,6 +39,7 @@ class Camera {
     gridDebug = {
         x: [],
         y: [],
+        test: [],
     };
     isCount = 0;
 
@@ -59,22 +60,34 @@ class Camera {
             let whileCountY = 0;
 
             while(hit == 0) {
+                /* let dex = this.calcDrawEnd(this.sideDist.x)
+                let dey = this.calcDrawEnd(this.sideDist.y)
+                let lastInter = this.gridDebug.test.at(-1)
+
+                if(dex == dey) {
+                    if(!lastInter) this.gridDebug.test.push(new Vector3(x,dey))
+                    else if(lastInter.y != dey && lastInter.x != x) this.gridDebug.test.push(new Vector3(x,dey))
+                } */
                 if(this.sideDist.x < this.sideDist.y){
                     if(x == this.xDebug) this.intersectionsDebug.x.push(this.sideDist.x)
-                    if(debugEnabled){
+                    /* if(debugEnabled){
                         if(!this.gridDebug.x[whileCountX]) this.gridDebug.x[whileCountX] = [new Vector3(x,this.calcDrawEnd(this.sideDist.x))]
                         else this.gridDebug.x[whileCountX][1] = new Vector3(x,this.calcDrawEnd(this.sideDist.x))
-                    } 
+                    }  */
+
+                    debugHandler.pushGridCoords(x,this.calcDrawEnd(this.sideDist.x),this.intPos.x,this.intPos.y);
                     this.sideDist.x += this.deltaDist.x;
                     this.intPos.x += this.step.x;
                     this.side = 0;
                     whileCountX++;
                 } else {
                     if(x == this.xDebug) this.intersectionsDebug.y.push(this.sideDist.y)
-                    if(debugEnabled){
+                    /* if(debugEnabled){
                         if(!this.gridDebug.y[whileCountY]) this.gridDebug.y[whileCountY] = [new Vector3(x,this.calcDrawEnd(this.sideDist.y))]
                         else this.gridDebug.y[whileCountY][1] = new Vector3(x,this.calcDrawEnd(this.sideDist.y))
-                    } 
+                    } */ 
+
+                    debugHandler.pushGridCoords(x,this.calcDrawEnd(this.sideDist.y),this.intPos.x,this.intPos.y);
                     this.sideDist.y += this.deltaDist.y;
                     this.intPos.y += this.step.y;
                     this.side = 1;
@@ -104,7 +117,7 @@ class Camera {
 
             this.setColor();
             this.drawLine(x);
-
+            
 
             /* debug('perpWallDist',this.perpWallDist)
             debug('player pos x',this.player.pos.x)
@@ -115,13 +128,7 @@ class Camera {
         if(debugEnabled){
             this.drawDebugLine();
             this.drawDebugIntersection();
-            debug('debug grid len',this.gridDebug.x.length)
-            this.drawDebugGrid();
-            if(this.firstIter) console.log(this.gridDebug)
-            if(this.triggerConsole) console.log(this.gridDebug)
-            this.triggerConsole = false;
-            this.gridDebug.x = []
-            this.gridDebug.y = []
+            this.drawBetterDebugGrid();
         }
         this.firstIter = false;
         debug('isCount',this.isCount,'red')
@@ -224,6 +231,8 @@ class Camera {
             debug('de',de)
         }
         ctx.closePath();
+        debug('inter x len',this.intersectionsDebug.x.length)
+        debug('inter y len',this.intersectionsDebug.y.length)
         this.intersectionsDebug.x = [];
         this.intersectionsDebug.y = [];
     }
@@ -236,10 +245,24 @@ class Camera {
 
         ctx.strokeStyle = 'green';
         ctx.fillStyle = 'green';
-        this.drawDebugGridLine(this.gridDebug.y)
+        //this.drawDebugGridLine(this.gridDebug.y)
 
         this.gridDebug.x = [];
         this.gridDebug.y = [];
+    }
+
+    drawBetterDebugGrid(){
+        ctx.beginPath();
+        ctx.fillStyle = 'red'
+        for(let i = 0; i < this.gridDebug.test.length; i++){
+            let a = this.gridDebug.test[i];
+            ctx.fillRect(a.x - 5 ,a.y - 5 ,10 ,10)
+        }
+        ctx.closePath();
+        debug('gridtest length',this.gridDebug.test.length)
+        if(this.triggerConsole) console.log(this.gridDebug.test)
+        this.triggerConsole = false;
+        this.gridDebug.test = []
     }
 
     drawDebugGridLine(lineArr){
