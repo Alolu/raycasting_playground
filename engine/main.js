@@ -16,10 +16,10 @@ let pointerEnabled = false;
 let debugQueue = [], debugIdQueue = [];
 let debugTextSize = 20,
     debugColor = 'white',
-    debugEnabled = true
+    debugEnabled = false
 
-const game = new Game();
-const debugHandler = new DebugHandler(game,debugEnabled);
+let game;
+let debugHandler = new DebugHandler(game,debugEnabled);
 
 function update(time){
     invalidateCanvas();
@@ -31,13 +31,12 @@ function update(time){
     oldtime = time
     
     game.update();
-    debugHandler.update();
+    //debugHandler.update();
 
     debug('FPS',parseInt(1/framespeed))
     debug('Screen Width',SCREEN_WIDTH)
     debug('Screen Height',SCREEN_HEIGHT)
     
-    write('The grid is less ressource heavy but kinda buggy rn lol',10,SCREEN_HEIGHT - 210,'white','30pt')
     displayDebug();
     requestAnimationFrame(update);
 }
@@ -46,13 +45,14 @@ function init(){
     SCREEN.width = SCREEN_WIDTH;
     SCREEN.height = SCREEN_HEIGHT;
     SCREEN.style.border = '1px solid black'
-
     document.body.appendChild(SCREEN)
     SCREEN.requestPointerLock = SCREEN.requestPointerLock || SCREEN.mozRequestPointerLock;
     SCREEN.onclick = () => {
         SCREEN.requestPointerLock();
     }
 
+    game = new Game();
+    debugHandler = new DebugHandler(game,debugEnabled);
 
     requestAnimationFrame(update);
 }

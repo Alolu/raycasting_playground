@@ -5,7 +5,7 @@ class TextureLoader {
         this.floorTexture = null;
         this.loaded = false;
         this.loadTextures()
-        this.loadFloorTexture()
+        //this.loadFloorTexture()
     }
 
     loadTextures(){
@@ -21,6 +21,8 @@ class TextureLoader {
                 texture.src = TEXTURE_FOLDER + i + '.png';
                 this.textures.push(texture)
         }
+
+        this.loaded = true;
     }
 
     loadFloorTexture(){

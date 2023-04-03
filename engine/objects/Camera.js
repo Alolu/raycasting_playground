@@ -14,6 +14,7 @@ class Camera {
     perpWallDist;
     cameraX = 0;
     side = 0;
+    render = true;
     lineHeight;
     drawStart;
     textureId;
@@ -27,15 +28,11 @@ class Camera {
     wall = new Vector3();
     tex = new Vector3();
     buffer = [];
-    firstIter = true;
     triggerConsole = false;
-
+    tilesInFOV = [];
+    
     xDebug = SCREEN_WIDTH/2;
     xDebugdrawEnd = 0;
-    intersectionsDebug = {
-        x: [],
-        y: [],
-    }
     gridDebug = {
         x: [],
         y: [],
@@ -44,62 +41,70 @@ class Camera {
     isCount = 0;
 
     update(){
-        for(let x = 0; x < SCREEN_WIDTH; x++){
 
-            let hit = 0;
+        this.tilesInFOV = [];
+
+        for(let x = 0; x < SCREEN_WIDTH; x++){
             
             this.cameraX = 2*x / SCREEN_WIDTH - 1;
+            //cameraX acts as the cosine of the screen, which is used to set the ray direction
+            //it also serves to split the plane (fov) in half which is useful for pytaghorean calc
+            let intersectionArr = [];
             
-            this.setRaydir()
-            this.setIntPos()
-            this.setDeltaDist()
+            //set ray direction
+            this.rayDir.x = this.player.dir.x + this.player.fov.x * this.cameraX;
+            this.rayDir.y = this.player.dir.y + this.player.fov.y * this.cameraX;
+            //this.cameraX
+            
+            //set integer player position in map
+            this.intPos.x = Math.floor(this.player.pos.x);
+            this.intPos.y = Math.floor(this.player.pos.y);
+            
+            //set delta dist
+            this.deltaDist.x = Math.abs(1/this.rayDir.x);
+            this.deltaDist.y = Math.abs(1/this.rayDir.y)
 
             this.setStepAndInitialSideDist()
+            //debug('initial sidedist',this.sideDist.toString())
 
-            let whileCountX = 0;
-            let whileCountY = 0;
+            if(x == 0) this.tilesInFOV.push(this.intPos.clone())
+            let tilesFOVx = []
 
+            let hit = 0;
             while(hit == 0) {
-                /* let dex = this.calcDrawEnd(this.sideDist.x)
-                let dey = this.calcDrawEnd(this.sideDist.y)
-                let lastInter = this.gridDebug.test.at(-1)
-
-                if(dex == dey) {
-                    if(!lastInter) this.gridDebug.test.push(new Vector3(x,dey))
-                    else if(lastInter.y != dey && lastInter.x != x) this.gridDebug.test.push(new Vector3(x,dey))
-                } */
                 if(this.sideDist.x < this.sideDist.y){
-                    if(x == this.xDebug) this.intersectionsDebug.x.push(this.sideDist.x)
-                    /* if(debugEnabled){
-                        if(!this.gridDebug.x[whileCountX]) this.gridDebug.x[whileCountX] = [new Vector3(x,this.calcDrawEnd(this.sideDist.x))]
-                        else this.gridDebug.x[whileCountX][1] = new Vector3(x,this.calcDrawEnd(this.sideDist.x))
-                    }  */
-
-                    debugHandler.pushGridCoords(x,this.calcDrawEnd(this.sideDist.x),this.intPos.x,this.intPos.y);
                     this.sideDist.x += this.deltaDist.x;
                     this.intPos.x += this.step.x;
                     this.side = 0;
-                    whileCountX++;
+                    if(x == this.xDebug) {
+                        let vec = new Vector3(x,this.calcDrawEnd(this.sideDist.x - this.deltaDist.x))
+                        vec.color = 'red'
+                        vec.sideDist = this.sideDist;
+                        vec.deltaDist = this.deltaDist;
+                        vec.intPos = this.intPos.clone();
+                        intersectionArr.push(vec)
+                    }
                 } else {
-                    if(x == this.xDebug) this.intersectionsDebug.y.push(this.sideDist.y)
-                    /* if(debugEnabled){
-                        if(!this.gridDebug.y[whileCountY]) this.gridDebug.y[whileCountY] = [new Vector3(x,this.calcDrawEnd(this.sideDist.y))]
-                        else this.gridDebug.y[whileCountY][1] = new Vector3(x,this.calcDrawEnd(this.sideDist.y))
-                    } */ 
-
-                    debugHandler.pushGridCoords(x,this.calcDrawEnd(this.sideDist.y),this.intPos.x,this.intPos.y);
                     this.sideDist.y += this.deltaDist.y;
                     this.intPos.y += this.step.y;
                     this.side = 1;
-                    whileCountY++;
+                    if(x == this.xDebug) {
+                        let vec = new Vector3(x,this.calcDrawEnd(this.sideDist.y - this.deltaDist.y))
+                        vec.color = 'blue'
+                        vec.sideDist = this.sideDist.clone();
+                        vec.deltaDist = this.deltaDist.clone();
+                        vec.intPos = this.intPos.clone();
+                        intersectionArr.push(vec)
+                    } 
                 }
 
                 //If the ray hit into a wall, stop the ray
                 if(gamemap[this.intPos.x][this.intPos.y] > 0) hit = 1;
+                //else if(!includesVector(this.tilesInFOV,this.intPos)) this.tilesInFOV.push(this.intPos.clone())
             }
-
             //get closest distance from visible wall to camera plane (explication to revisit)
             this.perpWallDist = this.side ? (this.sideDist.y - this.deltaDist.y) : (this.sideDist.x - this.deltaDist.x);
+            debug('ppwd',this.perpWallDist)
             this.lineHeight = Math.floor(SCREEN_HEIGHT / this.perpWallDist)
             this.textureId = gamemap[this.intPos.x][this.intPos.y] - 1;
 
@@ -110,44 +115,15 @@ class Camera {
             //Substract the integer to get the wall coordinate itself
             this.wall.x -= Math.floor(this.wall.x);
 
-            this.setTexCoords();
+            this.tex.x = Math.floor(this.wall.x * TEX_WIDTH)
+            this.tex.x = TEX_WIDTH - this.tex.x - 1;
+
             this.setDrawBoundary();
-            //this.drawTexture(x);
-            if(x == this.xDebug) this.xDebugdrawEnd = this.drawEnd;
 
-            this.setColor();
+            //if(this.xDebug == x) this.drawDebugLine();
             this.drawLine(x);
-            
-
-            /* debug('perpWallDist',this.perpWallDist)
-            debug('player pos x',this.player.pos.x)
-            debug('player pos y',this.player.pos.y)
-            debug('cell pos x', this.intPos.x)
-            debug('cell pos y', this.intPos.y) */
+            //this.drawDebugCoords(intersectionArr);
         }
-        if(debugEnabled){
-            this.drawDebugLine();
-            this.drawDebugIntersection();
-            this.drawBetterDebugGrid();
-        }
-        this.firstIter = false;
-        debug('isCount',this.isCount,'red')
-        this.isCount = 0;
-    }
-
-    setRaydir(){
-        this.rayDir.x = this.player.dir.x + this.player.fov.x * this.cameraX;
-        this.rayDir.y = this.player.dir.y + this.player.fov.y * this.cameraX;
-    }
-
-    setIntPos(){
-        this.intPos.x = Math.floor(this.player.pos.x);
-        this.intPos.y = Math.floor(this.player.pos.y);
-    }
-
-    setDeltaDist(){
-        this.deltaDist.x = Math.abs(1/this.rayDir.x);
-        this.deltaDist.y = Math.abs(1/this.rayDir.y)
     }
 
     setStepAndInitialSideDist(){
@@ -168,15 +144,6 @@ class Camera {
         }
     }
 
-    setColor(){
-        if(this.side){
-            this.color = '#FF4300'
-        } else {
-            this.color = '#CC3500'
-        }
-
-    }
-
     setDrawBoundary(){
         this.drawStart = -this.lineHeight / 2 + SCREEN_HEIGHT / 2
         //if(this.drawStart < 0) this.drawStart = 0;
@@ -186,15 +153,10 @@ class Camera {
     }
 
     drawLine(x){
-        let step = TEX_HEIGHT / this.lineHeight;
-        let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
-        this.tex.y = parseInt(texPos) & (TEX_HEIGHT - 1);
-        /* debug('tex y',this.tex.y)
-        debug('tex pos',parseInt(texPos))
-        debug('step', step)
-        debug('drawstart',this.drawStart)
-        debug('drawend',this.drawEnd)
-        debug('lineheight',this.lineHeight) */
+        if(!this.render) return;
+        //let step = TEX_HEIGHT / this.lineHeight;
+        //let texPos = (this.drawStart - SCREEN_HEIGHT / 2 + this.lineHeight / 2) * step;
+        //this.tex.y = parseInt(texPos) & (TEX_HEIGHT - 1);
 
         ctx.drawImage(game.textureLoader.textures[this.textureId],this.tex.x,0,1,TEX_HEIGHT,x,this.drawStart,1,this.lineHeight)
     }
@@ -203,88 +165,34 @@ class Camera {
         let lh = Math.floor(SCREEN_HEIGHT / intersec)
         let de = lh / 2 + SCREEN_HEIGHT / 2
         return de;
+
+        //reverse calc draw end: 969/((test - 969/2)*2)
     }
 
     drawDebugLine(){
         ctx.beginPath();
         ctx.strokeStyle = 'white'
         ctx.moveTo(SCREEN_WIDTH/2,SCREEN_HEIGHT)
-        ctx.lineTo(this.xDebug,this.xDebugdrawEnd)
+        ctx.lineTo(this.xDebug,this.drawStart + this.lineHeight)
         ctx.stroke();
         ctx.closePath();
     }
 
-    drawDebugIntersection(){
+    drawDebugCoords(vecArr){
         ctx.beginPath();
-        for(let i = 0; i < this.intersectionsDebug.x.length; i++){
-            ctx.fillStyle = 'red'
-            let lh = Math.floor(SCREEN_HEIGHT / this.intersectionsDebug.x[i])
-            let de = lh / 2 + SCREEN_HEIGHT / 2
-            ctx.fillRect(this.xDebug - 5,de - 5,10,10)
-            debug('de',de)
-        }
-        for(let i = 0; i < this.intersectionsDebug.y.length; i++){
-            ctx.fillStyle = 'green'
-            let lh = Math.floor(SCREEN_HEIGHT / this.intersectionsDebug.y[i])
-            let de = lh / 2 + SCREEN_HEIGHT / 2
-            ctx.fillRect(this.xDebug - 5,de - 5,10,10)
-            debug('de',de)
-        }
-        ctx.closePath();
-        debug('inter x len',this.intersectionsDebug.x.length)
-        debug('inter y len',this.intersectionsDebug.y.length)
-        this.intersectionsDebug.x = [];
-        this.intersectionsDebug.y = [];
-    }
-
-    drawDebugGrid(){
-        ctx.strokeStyle = 'red';
-        ctx.fillStyle = 'red';
-        this.drawDebugGridLine(this.gridDebug.x)
-        //debug('gdx 1 length',this.gridDebug.x[0].length)
-
-        ctx.strokeStyle = 'green';
-        ctx.fillStyle = 'green';
-        //this.drawDebugGridLine(this.gridDebug.y)
-
-        this.gridDebug.x = [];
-        this.gridDebug.y = [];
-    }
-
-    drawBetterDebugGrid(){
-        ctx.beginPath();
-        ctx.fillStyle = 'red'
-        for(let i = 0; i < this.gridDebug.test.length; i++){
-            let a = this.gridDebug.test[i];
-            ctx.fillRect(a.x - 5 ,a.y - 5 ,10 ,10)
-        }
-        ctx.closePath();
-        debug('gridtest length',this.gridDebug.test.length)
-        if(this.triggerConsole) console.log(this.gridDebug.test)
-        this.triggerConsole = false;
-        this.gridDebug.test = []
-    }
-
-    drawDebugGridLine(lineArr){
-        for(let i = 0; i < lineArr.length; i++){
-            this.isCount++
-            let a = lineArr[i][0];
-            let b = lineArr[i][1];
-            if(b){
-                write(`${i + 1}: [${a.x},${a.y}] - [${b.x},${b.y}]`,a.x,a.y)
-                ctx.beginPath()
-                ctx.moveTo(a.x,a.y)
-                debug('grid arr',lineArr.length)
-                ctx.lineTo(b.x,b.y)
-                ctx.stroke()
-                ctx.closePath()
-                //ctx.fillRect(x - 5,this.gridDebug.x[i] - 5,10,10)
-            } else {
-                debug('outlier x',a.x)
-                debug('outlier y',a.y)
-                ctx.fillRect(a.x,a.y,1,1)
+        for(let [i,vec] of vecArr.entries()){
+            ctx.fillStyle = vec.color
+            ctx.fillRect(vec.x - 5,vec.y - 5, 10, 10)
+            let limit = 4
+            if(i < limit){
+                write(`pos       [${vec.toString()}]`,vec.x + 5, vec.y + 5,'white',15)
+                write(`map pos   [${vec.intPos.toString()}]`,vec.x + 5, vec.y + 20,'white',10)
+                write(`sidedist  [${vec.sideDist.toString()}]`,vec.x + 5, vec.y + 35,'white',10)
+                write(`deltadist [${vec.deltaDist.toString()}]`,vec.x + 5, vec.y + 50,'white',10)
+                write(`subdist   [${vec.sideDist.substract(vec.deltaDist).toString()}]`,vec.x + 5, vec.y + 65,'white',10)
             }
         }
+        ctx.closePath();
     }
 
     setWallCoords(){
@@ -301,20 +209,12 @@ class Camera {
         debug('wallY',this.wall.y) */
     }
 
-    setTexCoords(){
-        this.tex.x = Math.floor(this.wall.x * TEX_WIDTH)
-        if(this.side == 0 && this.rayDir.x > 0) this.tex.x = TEX_WIDTH - this.tex.x - 1;
-        if(this.side == 1 && this.rayDir.y < 0) this.tex.x = TEX_WIDTH - this.tex.x - 1;
-
-        /* debug('intrisic wall x', this.wall.x) */
-    }
-
     rayToMap(){
         let mapRay = new Vector3();
 
         if(this.side == 0) mapRay.set(this.wall.y,this.wall.x)
         else mapRay.set(this.wall.x, this.wall.y)
 
-        game.map.pushRayQueue(mapRay);
+        //game.map.pushRayQueue(mapRay);
     }
 }

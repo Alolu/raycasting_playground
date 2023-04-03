@@ -90,6 +90,8 @@ class Player {
 
         debug('dir x',this.dir.x)
         debug('dir y',this.dir.y)
+        debug('xpos',game.player.pos.x)
+        debug('ypos',game.player.pos.y)
 
         //debug('delta',this.rotatespeed)
     }

@@ -101,4 +101,23 @@ class Vector3 {
 
         return this;
     }
- }
+
+    toString(){
+        return `x:${this.x}, y:${this.y}, z:${this.z}`
+    }
+
+    /**
+     * 
+     * @param {Vector3} vector 
+     */
+    equals(vector){
+        return this.x == vector.x && this.y == vector.y && this.z == vector.z
+    }
+}
+
+function includesVector(vecArr,vector){
+    for (let vec of vecArr){
+        if(vec.equals(vector)) return true   
+    }
+    return false
+}

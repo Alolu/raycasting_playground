@@ -1,6 +1,7 @@
 class FloorCast {
 
     constructor(game) {
+        this.game = game
         this.player = game.player
         this.buffer = ctx.createImageData(SCREEN_WIDTH, SCREEN_HEIGHT)
     }
@@ -22,6 +23,12 @@ class FloorCast {
         imageData.data[idx + 1] = pixel[1]
         imageData.data[idx + 2] = pixel[2]
         imageData.data[idx + 3] = pixel[3]
+    }
+
+    update2(){
+        for (let y = 0; y < SCREEN_HEIGHT; y++) {
+            
+        }
     }
 
     update() {
