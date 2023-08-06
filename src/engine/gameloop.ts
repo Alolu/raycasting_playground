@@ -1,7 +1,8 @@
 import { DEFAULT_SCREEN_COLOR, SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
+import Loggable from "./logging/Loggable";
 import SceneManager from "./scene/sceneManager";
 
-export default class GameLoop {
+export default class GameLoop extends Loggable {
   
   sceneManager:SceneManager
   ctx: CanvasRenderingContext2D
@@ -9,6 +10,7 @@ export default class GameLoop {
   oldTime: number = 0 
 
   constructor(ctx:CanvasRenderingContext2D, sceneManager:SceneManager){
+    super()
     this.ctx = ctx
     this.sceneManager = sceneManager
   }

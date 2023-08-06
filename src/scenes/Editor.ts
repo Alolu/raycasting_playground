@@ -1,70 +1,47 @@
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants";
-import { Scene, SceneRenderingContext } from "../engine/scene";
-import game from "../game";
-import Test from "./Test";
+import EditorController from "../controllers/EditorController";
+import { Scene, SceneRenderingContext } from "../engine/scene/Scene";
+
+const SCENE_IDENTIFER = "editor_1"
+const SCENE_BACKGROUND = "#f2f1ed"
 
 export default class EditorScene implements Scene {
 
-  backgroundColor = "#f2f1ed"
-  zoom = 1.5
-  zoomIncrementSpeed = 0.05
-  baseSquareToPxUnit = 100
-  squareToPxUnit = this.baseSquareToPxUnit
-  squareNumbersX = SCREEN_WIDTH/this.squareToPxUnit
-  squareNumbersY = SCREEN_HEIGHT/this.squareToPxUnit
+  backgroundColor = SCENE_BACKGROUND
+  identifer: string = SCENE_IDENTIFER
 
-  draw({ctx,fps}:SceneRenderingContext): void {
-    ctx.beginPath()
-    ctx.font = `30px serif`;
-    ctx.fillStyle = "black"
-    ctx.fillText(Math.ceil(fps).toString(),15,30);
-    ctx.closePath()
+  editorController:EditorController = new EditorController()
 
-    this.calcSquareAmount()
-    this.drawMap(ctx)
+  draw({ctx}:SceneRenderingContext): void {
+    this.editorController.calcSquareAmount()
+    this.editorController.drawMap(ctx)
+    this.editorController.drawCoords(ctx)
+    this.editorController.debug(ctx)
   }
 
-  scrollAction = (e: WheelEvent) => {
-    console.log(this.zoom)
-    if(e.deltaY < 0) this.zoom += this.zoomIncrementSpeed
-    if(e.deltaY > 0 && this.zoom > 0.1) this.zoom -= this.zoomIncrementSpeed
+  enableDragMode = (e: MouseEvent) => {
+    this.editorController.dragX = e.x
+    this.editorController.dragY = e.y
+    this.editorController.dragModeEnabled = true
+  }
+
+  disableDragMode = () => this.editorController.dragModeEnabled = false
+
+  mapControlHandler = (e:KeyboardEvent) => {
+    if(e.key === "c") this.editorController.coordsDisplayEnabled = !this.editorController.coordsDisplayEnabled
+    if(e.key === "a") this.editorController.logAction()
+    if(e.key === "d") this.editorController.displayDebugEnabled = !this.editorController.displayDebugEnabled
+    if(e.key === "r") this.editorController.reset()
   }
 
   onLoad(){
-    addEventListener("wheel",this.scrollAction)
+    addEventListener("wheel",this.editorController.scrollAction)
+    addEventListener("keydown", this.mapControlHandler)
+    addEventListener("mousedown", this.enableDragMode)
+    addEventListener("mouseup", this.disableDragMode)
+    addEventListener("mousemove", this.editorController.dragHandler)
   }
 
   onDestroy() {
-    removeEventListener("wheel",this.scrollAction)
+    removeEventListener("wheel",this.editorController.scrollAction)
   }
-
-  calcSquareAmount(){
-    this.squareToPxUnit = this.baseSquareToPxUnit * this.zoom
-    this.squareNumbersX = SCREEN_WIDTH/this.squareToPxUnit
-    this.squareNumbersY = SCREEN_HEIGHT/this.squareToPxUnit
-  }
-
-  drawMap(ctx:CanvasRenderingContext2D){
-    ctx.beginPath()
-    ctx.translate(.5,.5)
-    ctx.lineWidth = 1
-    ctx.strokeStyle = "#c4c2bc"
-
-    for(let i = 0; i < this.squareNumbersX; i++){
-      ctx.moveTo(i * this.squareToPxUnit, 0)
-      ctx.lineTo(i * this.squareToPxUnit, SCREEN_HEIGHT)
-      ctx.stroke()
-    }
-
-    for(let i = 0; i < this.squareNumbersY; i++){
-      ctx.moveTo(0, i * this.squareToPxUnit)
-      ctx.lineTo(SCREEN_WIDTH, i * this.squareToPxUnit)
-      ctx.stroke()
-    }
-
-    ctx.resetTransform()
-    ctx.closePath()
-  }
-
-
 }

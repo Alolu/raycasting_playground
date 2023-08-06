@@ -1,15 +1,12 @@
 import { SCREEN, SCREEN_WIDTH, SCREEN_HEIGHT, ctx } from "./constants";
 import GameLoop from "./engine/gameloop"
+import LogManager from "./engine/logging/LogManager";
 import SceneManager from "./engine/scene/sceneManager";
 import EditorScene from "./scenes/Editor";
 
-const sceneManager:SceneManager = new SceneManager(new EditorScene())
+const logManager:LogManager = new LogManager()
+const sceneManager:SceneManager = new SceneManager()
 const gameLoop:GameLoop = new GameLoop(ctx!,sceneManager)
-
-function load():void {
-  init()
-  gameLoop.run(0)
-}
 
 function init(){
   if (ctx == null) return;
@@ -21,6 +18,15 @@ function init(){
 
   ctx.fillStyle = '#fff'
   ctx.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+
+  sceneManager.loadScene(new EditorScene())
 }
 
-export default { load, gameLoop: gameLoop, sceneManager }
+function load():void {
+  init()
+  logManager.info("game","Running gameloop")
+  gameLoop.run(0)
+}
+
+export default { load, gameLoop, sceneManager}
+export const logger = logManager;

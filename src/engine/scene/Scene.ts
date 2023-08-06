@@ -1,5 +1,6 @@
 export interface Scene {
   backgroundColor?:string
+  identifer:string
   onLoad?():void
   onDestroy?():void
   draw(sceneContext:SceneRenderingContext):void
